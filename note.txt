@@ -5,6 +5,22 @@ pip install torch torchvision torchaudio --extra-index-url https://download.pyto
 pip install --pre torch torchvision torchaudio --index-url https://download.pytorch.org/whl/nightly/cu121
 
 pip install -r requirements.txt
-
-
 python main.py
+
+wget -c https://huggingface.co/runwayml/stable-diffusion-v1-5/resolve/main/v1-5-pruned-emaonly.ckpt -P ./models/checkpoints/
+wget -c https://huggingface.co/stabilityai/sd-vae-ft-mse-original/resolve/main/vae-ft-mse-840000-ema-pruned.safetensors -P ./models/vae/
+
+git clone https://github.com/Kosinkadink/ComfyUI-VideoHelperSuite.git
+mv ComfyUI-VideoHelperSuite ./custom_nodes
+
+git clone https://github.com/Kosinkadink/ComfyUI-AnimateDiff-Evolved.git
+mv ComfyUI-AnimateDiff-Evolved /home/ubuntu/Desktop/Eugene/ComfyUI/custom_nodes
+
+git clone https://github.com/Fannovel16/ComfyUI-Frame-Interpolation.git
+python ComfyUI-Frame-Interpolation/install.py
+mv ComfyUI-Frame-Interpolation ./custom_nodes
+
+wget -c https://huggingface.co/manshoety/beta_testing_models/resolve/main/mm-p_0.75.pth?download=true -P ./custom_nodes/ComfyUI-AnimateDiff-Evolved/models
+
+
+
