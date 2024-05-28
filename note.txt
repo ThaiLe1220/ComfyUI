@@ -7,9 +7,6 @@ pip install --pre torch torchvision torchaudio --index-url https://download.pyto
 pip install -r requirements.txt
 python main.py
 
-wget -c https://huggingface.co/runwayml/stable-diffusion-v1-5/resolve/main/v1-5-pruned-emaonly.ckpt -P ./models/checkpoints/
-wget -c https://huggingface.co/stabilityai/sd-vae-ft-mse-original/resolve/main/vae-ft-mse-840000-ema-pruned.safetensors -P ./models/vae/
-
 git clone https://github.com/Kosinkadink/ComfyUI-VideoHelperSuite.git
 mv ComfyUI-VideoHelperSuite ./custom_nodes
 
@@ -20,7 +17,34 @@ git clone https://github.com/Fannovel16/ComfyUI-Frame-Interpolation.git
 python ComfyUI-Frame-Interpolation/install.py
 mv ComfyUI-Frame-Interpolation ./custom_nodes
 
-wget -c https://huggingface.co/manshoety/beta_testing_models/resolve/main/mm-p_0.75.pth?download=true -P ./custom_nodes/ComfyUI-AnimateDiff-Evolved/models
+git clone https://github.com/ltdrdata/ComfyUI-Manager.git
+mv ComfyUI-Manager ./custom_nodes
 
+git clone https://github.com/Kosinkadink/ComfyUI-Advanced-ControlNet.git
+mv ComfyUI-Advanced-ControlNet ./custom_nodes
+
+# git clone https://github.com/Fannovel16/comfy_controlnet_preprocessors.git
+# mv comfy_controlnet_preprocessors ./custom_nodes
+
+git clone https://github.com/Fannovel16/comfyui_controlnet_aux
+cd comfyui_controlnet_aux
+pip install -r requirements.txt
+cd ..
+mv comfyui_controlnet_aux ./custom_nodes
+
+
+ADE_AnimateDiffLoaderWithContext
+
+
+
+video sources:
+https://mixkit.co/ 
+https://mixkit.co/free-vertical-videos/
+
+
+Stable Diffusion Samplers: A Comprehensive Guide
+https://stable-diffusion-art.com/samplers/
+
+https://www.reddit.com/r/StableDiffusion/comments/zgu6wd/comment/izkhkxc/?utm_source=share&utm_medium=web2x&context=3
 
 
