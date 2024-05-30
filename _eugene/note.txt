@@ -32,9 +32,9 @@ pip install -r requirements.txt
 cd ..
 mv comfyui_controlnet_aux ./custom_nodes
 
-
 ADE_AnimateDiffLoaderWithContext
-
+wget -O /home/ubuntu/Desktop/Eugene/ComfyUI/models/checkpoints/fenrisxl_SDXLLightning.safetensors https://civitai.com/api/download/models/370565
+wget -O custom_nodes/ComfyUI-AnimateDiff-Evolved/models/animatediffMotion_sdxlV10Beta.ckpt https://civitai.com/api/download/models/219642
 
 
 video sources:
@@ -46,5 +46,25 @@ Stable Diffusion Samplers: A Comprehensive Guide
 https://stable-diffusion-art.com/samplers/
 
 https://www.reddit.com/r/StableDiffusion/comments/zgu6wd/comment/izkhkxc/?utm_source=share&utm_medium=web2x&context=3
+
+
+
+1. 640 x 360 pixels (nHD)
+   - Often used in older mobile devices and some video streaming services for lower bandwidth requirements.
+
+2. 854 x 480 pixels (FWVGA)
+   - Frequently used in low-end smartphones and early digital video formats.
+
+3. 960 x 540 pixels (qHD)
+   - Quarter of Full HD resolution, used in some smartphones and portable devices.
+
+4. 1024 x 576 pixels (WSVGA)
+   - Occasionally found in smaller displays and specific older devices.
+
+
+
+(masterpiece, best quality) beautiful girl, happy, moves forward, dancing, in the middle of nature
+
+(bad quality, worst quality) NSFW, ugly, deformed, bad lighting, blurry, text, watermark, extra hands, bad quality, deformed hands, deformed fingers, nostalgic, drawing, painting, bad anatomy, worst quality, blurry, blurred, normal quality, bad focus, tripod, three legs, weird legs, short legs
 
 
