@@ -1,0 +1,267 @@
+{
+  "last_node_id": 39,
+  "last_link_id": 42,
+  "nodes": [
+    {
+      "id": 37,
+      "type": "Note",
+      "pos": [
+        120,
+        600
+      ],
+      "size": {
+        "0": 650,
+        "1": 100
+      },
+      "flags": {},
+      "order": 0,
+      "mode": 0,
+      "title": "JDCN - Custom Nodes",
+      "properties": {
+        "text": ""
+      },
+      "widgets_values": [
+        "Seamless Node Used from here: \nInstall from here: https://github.com/daxcay/ComfyUI-JDCN\n\nThese are new Custom nodes, made for the workflows made for patreon.  "
+      ],
+      "color": "#841111",
+      "bgcolor": "#982525",
+      "shape": 1
+    },
+    {
+      "id": 38,
+      "type": "Note",
+      "pos": [
+        120,
+        740
+      ],
+      "size": {
+        "0": 650,
+        "1": 140
+      },
+      "flags": {},
+      "order": 1,
+      "mode": 0,
+      "title": " ",
+      "properties": {
+        "text": ""
+      },
+      "widgets_values": [
+        "\nMy Other Workflows and Documented Tutorial: \n\nhttps://www.patreon.com/jerrydavos\n\n\nNode Workflow By \ndavos.jerry+contactai@gmail.com \nJerry Davos"
+      ],
+      "color": "#0b3994",
+      "bgcolor": "#1f4da8",
+      "shape": 1
+    },
+    {
+      "id": 36,
+      "type": "Note",
+      "pos": [
+        120,
+        500
+      ],
+      "size": {
+        "0": 650,
+        "1": 60
+      },
+      "flags": {},
+      "order": 2,
+      "mode": 0,
+      "title": " ",
+      "properties": {
+        "text": ""
+      },
+      "widgets_values": [
+        "This workflow takes an input image folder which has overlapping frames enabled. And will save them in a new folder inside the inputted folder location named \"Output\""
+      ],
+      "color": "#006000",
+      "bgcolor": "#0d740d",
+      "shape": 4
+    },
+    {
+      "id": 35,
+      "type": "Note",
+      "pos": [
+        1270,
+        340
+      ],
+      "size": {
+        "0": 420,
+        "1": 130
+      },
+      "flags": {},
+      "order": 3,
+      "mode": 0,
+      "title": "Seamless Settings",
+      "properties": {
+        "text": ""
+      },
+      "widgets_values": [
+        "\nBatchSize: Input the same batch range inputted in render workflow.\n\nOverlap: Input the overlapping value inputted in render workflow."
+      ],
+      "color": "#353535",
+      "bgcolor": "#212121"
+    },
+    {
+      "id": 39,
+      "type": "JDCN_SeamlessExperience",
+      "pos": [
+        1340,
+        540
+      ],
+      "size": {
+        "0": 320,
+        "1": 130
+      },
+      "flags": {},
+      "order": 5,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "inputDirectory",
+          "type": "STRING",
+          "link": 40,
+          "widget": {
+            "name": "inputDirectory"
+          }
+        }
+      ],
+      "outputs": [
+        {
+          "name": "NewImagePaths",
+          "type": "STRING",
+          "links": [],
+          "shape": 6,
+          "slot_index": 0
+        },
+        {
+          "name": "Log",
+          "type": "STRING",
+          "links": [
+            42
+          ],
+          "shape": 3,
+          "slot_index": 1
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "JDCN_SeamlessExperience"
+      },
+      "widgets_values": [
+        "directory path",
+        50,
+        10
+      ]
+    },
+    {
+      "id": 4,
+      "type": "String to Text",
+      "pos": [
+        860,
+        540
+      ],
+      "size": {
+        "0": 320,
+        "1": 60
+      },
+      "flags": {},
+      "order": 4,
+      "mode": 0,
+      "outputs": [
+        {
+          "name": "STRING",
+          "type": "STRING",
+          "links": [
+            40
+          ],
+          "shape": 3,
+          "slot_index": 0
+        }
+      ],
+      "title": "Input Folder",
+      "properties": {
+        "Node name for S&R": "String to Text"
+      },
+      "widgets_values": [
+        "F:\\#JD\\Patreon\\Tier Animation\\Animation 3\\Frames_AnimDiff_00001_94"
+      ],
+      "color": "#006a94",
+      "bgcolor": "#007ea8"
+    },
+    {
+      "id": 14,
+      "type": "ShowText|pysssss",
+      "pos": [
+        1760,
+        520
+      ],
+      "size": {
+        "0": 1150,
+        "1": 390
+      },
+      "flags": {},
+      "order": 6,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "text",
+          "type": "STRING",
+          "link": 42,
+          "widget": {
+            "name": "text"
+          }
+        }
+      ],
+      "outputs": [
+        {
+          "name": "STRING",
+          "type": "STRING",
+          "links": null,
+          "shape": 6
+        }
+      ],
+      "title": "Log",
+      "properties": {
+        "Node name for S&R": "ShowText|pysssss"
+      },
+      "widgets_values": [
+        "",
+        "\n=============================================================================\n\nROUND: 0\n\nMERGING: F:\\#JD\\Patreon\\Tier Animation\\Animation 3\\Frames_AnimDiff_00001_94\\output\\0_0051.png - F:\\#JD\\Patreon\\Tier Animation\\Animation 3\\Frames_AnimDiff_00001_94\\output\\1_0001.png\nMERGING: F:\\#JD\\Patreon\\Tier Animation\\Animation 3\\Frames_AnimDiff_00001_94\\output\\0_0052.png - F:\\#JD\\Patreon\\Tier Animation\\Animation 3\\Frames_AnimDiff_00001_94\\output\\1_0002.png\nMERGING: F:\\#JD\\Patreon\\Tier Animation\\Animation 3\\Frames_AnimDiff_00001_94\\output\\0_0053.png - F:\\#JD\\Patreon\\Tier Animation\\Animation 3\\Frames_AnimDiff_00001_94\\output\\1_0003.png\nMERGING: F:\\#JD\\Patreon\\Tier Animation\\Animation 3\\Frames_AnimDiff_00001_94\\output\\0_0054.png - F:\\#JD\\Patreon\\Tier Animation\\Animation 3\\Frames_AnimDiff_00001_94\\output\\1_0004.png\nMERGING: F:\\#JD\\Patreon\\Tier Animation\\Animation 3\\Frames_AnimDiff_00001_94\\output\\0_0055.png - F:\\#JD\\Patreon\\Tier Animation\\Animation 3\\Frames_AnimDiff_00001_94\\output\\1_0005.png\nMERGING: F:\\#JD\\Patreon\\Tier Animation\\Animation 3\\Frames_AnimDiff_00001_94\\output\\0_0056.png - F:\\#JD\\Patreon\\Tier Animation\\Animation 3\\Frames_AnimDiff_00001_94\\output\\1_0006.png\nMERGING: F:\\#JD\\Patreon\\Tier Animation\\Animation 3\\Frames_AnimDiff_00001_94\\output\\0_0057.png - F:\\#JD\\Patreon\\Tier Animation\\Animation 3\\Frames_AnimDiff_00001_94\\output\\1_0007.png\nMERGING: F:\\#JD\\Patreon\\Tier Animation\\Animation 3\\Frames_AnimDiff_00001_94\\output\\0_0058.png - F:\\#JD\\Patreon\\Tier Animation\\Animation 3\\Frames_AnimDiff_00001_94\\output\\1_0008.png\nMERGING: F:\\#JD\\Patreon\\Tier Animation\\Animation 3\\Frames_AnimDiff_00001_94\\output\\0_0059.png - F:\\#JD\\Patreon\\Tier Animation\\Animation 3\\Frames_AnimDiff_00001_94\\output\\1_0009.png\nMERGING: F:\\#JD\\Patreon\\Tier Animation\\Animation 3\\Frames_AnimDiff_00001_94\\output\\0_0060.png - F:\\#JD\\Patreon\\Tier Animation\\Animation 3\\Frames_AnimDiff_00001_94\\output\\1_0010.png\n\n=============================================================================\n\nROUND: 1\n\nMERGING: F:\\#JD\\Patreon\\Tier Animation\\Animation 3\\Frames_AnimDiff_00001_94\\output\\1_0051.png - F:\\#JD\\Patreon\\Tier Animation\\Animation 3\\Frames_AnimDiff_00001_94\\output\\2_0001.png\nMERGING: F:\\#JD\\Patreon\\Tier Animation\\Animation 3\\Frames_AnimDiff_00001_94\\output\\1_0052.png - F:\\#JD\\Patreon\\Tier Animation\\Animation 3\\Frames_AnimDiff_00001_94\\output\\2_0002.png\nMERGING: F:\\#JD\\Patreon\\Tier Animation\\Animation 3\\Frames_AnimDiff_00001_94\\output\\1_0053.png - F:\\#JD\\Patreon\\Tier Animation\\Animation 3\\Frames_AnimDiff_00001_94\\output\\2_0003.png\nMERGING: F:\\#JD\\Patreon\\Tier Animation\\Animation 3\\Frames_AnimDiff_00001_94\\output\\1_0054.png - F:\\#JD\\Patreon\\Tier Animation\\Animation 3\\Frames_AnimDiff_00001_94\\output\\2_0004.png\nMERGING: F:\\#JD\\Patreon\\Tier Animation\\Animation 3\\Frames_AnimDiff_00001_94\\output\\1_0055.png - F:\\#JD\\Patreon\\Tier Animation\\Animation 3\\Frames_AnimDiff_00001_94\\output\\2_0005.png\nMERGING: F:\\#JD\\Patreon\\Tier Animation\\Animation 3\\Frames_AnimDiff_00001_94\\output\\1_0056.png - F:\\#JD\\Patreon\\Tier Animation\\Animation 3\\Frames_AnimDiff_00001_94\\output\\2_0006.png\nMERGING: F:\\#JD\\Patreon\\Tier Animation\\Animation 3\\Frames_AnimDiff_00001_94\\output\\1_0057.png - F:\\#JD\\Patreon\\Tier Animation\\Animation 3\\Frames_AnimDiff_00001_94\\output\\2_0007.png\nMERGING: F:\\#JD\\Patreon\\Tier Animation\\Animation 3\\Frames_AnimDiff_00001_94\\output\\1_0058.png - F:\\#JD\\Patreon\\Tier Animation\\Animation 3\\Frames_AnimDiff_00001_94\\output\\2_0008.png\nMERGING: F:\\#JD\\Patreon\\Tier Animation\\Animation 3\\Frames_AnimDiff_00001_94\\output\\1_0059.png - F:\\#JD\\Patreon\\Tier Animation\\Animation 3\\Frames_AnimDiff_00001_94\\output\\2_0009.png\nMERGING: F:\\#JD\\Patreon\\Tier Animation\\Animation 3\\Frames_AnimDiff_00001_94\\output\\1_0060.png - F:\\#JD\\Patreon\\Tier Animation\\Animation 3\\Frames_AnimDiff_00001_94\\output\\2_0010.png\n\nIMAGES BEFORE: 138\n\nIMAGES AFTER: 118"
+      ]
+    }
+  ],
+  "links": [
+    [
+      40,
+      4,
+      0,
+      39,
+      0,
+      "STRING"
+    ],
+    [
+      42,
+      39,
+      1,
+      14,
+      0,
+      "STRING"
+    ]
+  ],
+  "groups": [
+    {
+      "title": "5_6) Seamless Maker",
+      "bounding": [
+        209,
+        361,
+        509,
+        80
+      ],
+      "color": "#3f789e",
+      "font_size": 50,
+      "locked": false
+    }
+  ],
+  "config": {},
+  "extra": {},
+  "version": 0.4
+}
