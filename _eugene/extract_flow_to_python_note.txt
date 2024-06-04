@@ -1,0 +1,7 @@
+git clone https://github.com/pydn/ComfyUI-to-Python-Extension.git
+
+pip install -r requirements.txt
+
+python comfyui_to_python.py
+
+/home/ubuntu/Desktop/Eugene/ComfyUI/workflow_api.json

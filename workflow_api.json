@@ -1,0 +1,164 @@
+{
+  "2": {
+    "inputs": {
+      "vae_name": "vae-ft-mse-840000-ema-pruned.safetensors"
+    },
+    "class_type": "VAELoader",
+    "_meta": {
+      "title": "Load VAE"
+    }
+  },
+  "3": {
+    "inputs": {
+      "text": "(Masterpiece, best quality, Ultra-detailed, high definition, Photorealistic, cinematic lighting, Sharp focus, vibrant colors) Sunrise over a pristine beach, golden light reflecting on calm waves, soft pink and orange hues in the sky, gentle waves lapping at the shore, untouched white sand, clear blue water, serene and peaceful atmosphere",
+      "clip": [
+        "102",
+        1
+      ]
+    },
+    "class_type": "CLIPTextEncode",
+    "_meta": {
+      "title": "CLIP Text Encode (Prompt)"
+    }
+  },
+  "6": {
+    "inputs": {
+      "text": "(bad quality, worst quality, Low quality, blurry, Grainy, pixelated, Poor lighting, underexposed, Overexposed, unnatural colors, Out of focus, amateurish, Artificial, unrealistic, Dull, lifeless) Crowded beach, pollution, litter, overcast sky, stormy weather, rough waves, muddy water, dark and dull colors, low resolution, poor lighting, blurry, artificial elements, buildings, people, animals, abstract, unrealistic, monochrome, NSFW\n",
+      "clip": [
+        "102",
+        1
+      ]
+    },
+    "class_type": "CLIPTextEncode",
+    "_meta": {
+      "title": "CLIP Text Encode (Prompt)"
+    }
+  },
+  "10": {
+    "inputs": {
+      "samples": [
+        "107",
+        0
+      ],
+      "vae": [
+        "2",
+        0
+      ]
+    },
+    "class_type": "VAEDecode",
+    "_meta": {
+      "title": "VAE Decode"
+    }
+  },
+  "93": {
+    "inputs": {
+      "model_name": "mm_sd_v15_v2.ckpt",
+      "beta_schedule": "sqrt_linear (AnimateDiff)",
+      "motion_scale": 1,
+      "apply_v2_models_properly": false,
+      "model": [
+        "102",
+        0
+      ],
+      "context_options": [
+        "94",
+        0
+      ]
+    },
+    "class_type": "ADE_AnimateDiffLoaderWithContext",
+    "_meta": {
+      "title": "AnimateDiff Loader [Legacy] 🎭🅐🅓①"
+    }
+  },
+  "94": {
+    "inputs": {
+      "context_length": 16,
+      "context_stride": 1,
+      "context_overlap": 4,
+      "context_schedule": "uniform",
+      "closed_loop": false,
+      "fuse_method": "flat",
+      "use_on_equal_length": false,
+      "start_percent": 0,
+      "guarantee_steps": 1
+    },
+    "class_type": "ADE_AnimateDiffUniformContextOptions",
+    "_meta": {
+      "title": "Context Options◆Looped Uniform 🎭🅐🅓"
+    }
+  },
+  "100": {
+    "inputs": {
+      "width": 512,
+      "height": 512,
+      "batch_size": 24
+    },
+    "class_type": "ADE_EmptyLatentImageLarge",
+    "_meta": {
+      "title": "Empty Latent Image (Big Batch) 🎭🅐🅓"
+    }
+  },
+  "101": {
+    "inputs": {
+      "frame_rate": 8,
+      "loop_count": 0,
+      "filename_prefix": "AnimateDiff",
+      "format": "video/h264-mp4",
+      "pix_fmt": "yuv420p",
+      "crf": 19,
+      "save_metadata": true,
+      "pingpong": false,
+      "save_output": true,
+      "images": [
+        "10",
+        0
+      ]
+    },
+    "class_type": "VHS_VideoCombine",
+    "_meta": {
+      "title": "Video Combine 🎥🅥🅗🅢"
+    }
+  },
+  "102": {
+    "inputs": {
+      "ckpt_name": "dreamshaper_8.safetensors"
+    },
+    "class_type": "CheckpointLoaderSimple",
+    "_meta": {
+      "title": "Load Checkpoint"
+    }
+  },
+  "107": {
+    "inputs": {
+      "add_noise": "enable",
+      "noise_seed": 621681785065275,
+      "steps": 24,
+      "cfg": 7,
+      "sampler_name": "dpmpp_2m_sde_gpu",
+      "scheduler": "karras",
+      "start_at_step": 0,
+      "end_at_step": 10000,
+      "return_with_leftover_noise": "disable",
+      "model": [
+        "93",
+        0
+      ],
+      "positive": [
+        "3",
+        0
+      ],
+      "negative": [
+        "6",
+        0
+      ],
+      "latent_image": [
+        "100",
+        0
+      ]
+    },
+    "class_type": "KSamplerAdvanced",
+    "_meta": {
+      "title": "KSampler (Advanced)"
+    }
+  }
+}
