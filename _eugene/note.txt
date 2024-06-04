@@ -89,3 +89,6 @@ https://supagruen.github.io/StableDiffusion-CheatSheet/
 https://docs.google.com/spreadsheets/d/1tzNVWXlNlSwFfRKD3qLl7Mwy_bBqJRFF3PrBY99BY4c/edit#gid=0
 
 https://drive.google.com/drive/folders/1HoZxKUX7WAg7ObqP00R4oIv48sXCEryQ
+
+https://stable-diffusion-art.com/animatediff/
+
