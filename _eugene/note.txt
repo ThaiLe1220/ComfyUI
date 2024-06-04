@@ -41,7 +41,7 @@ video sources:
 https://mixkit.co/ 
 https://mixkit.co/free-vertical-videos/
 
-
+ 
 Stable Diffusion Samplers: A Comprehensive Guide
 https://stable-diffusion-art.com/samplers/
 
@@ -65,7 +65,27 @@ https://www.reddit.com/r/StableDiffusion/comments/zgu6wd/comment/izkhkxc/?utm_so
 
 (masterpiece, best quality) beautiful girl, happy, moves forward, dancing, in the middle of nature
 
-(bad quality, worst quality) NSFW, ugly, deformed, bad lighting, blurry, text, watermark, extra hands, bad quality, deformed hands, deformed fingers, nostalgic, drawing, painting, bad anatomy, worst quality, blurry, blurred, normal quality, bad focus, tripod, three legs, weird legs, short legs
-
+(bad quality, worst quality) NSFW, deformed, bad lighting, unrealistic lighting, text, watermark, extra hands, extra arms, bad quality, deformed hands, deformed fingers, nostalgic, drawing, painting, bad anatomy, worst quality, blurry, blurred, normal quality, bad focus, tripod, three legs, weird legs, short legs
 
 (bad quality, worst quality) NSFW, deformed, bad lighting, blurry, watermark
+
+(masterpiece, best quality) Stylish woman, natural pose, African desert, vast sand dunes, clear blue sky, golden sunlight, sparse vegetation, acacia trees, warm tones, elegant attire, confident, charming.
+
+(masterpiece, best quality) Stylish woman, natural pose, cozy coffee shop, warm ambient lighting, modern decor, wooden tables, comfortable seating, coffee cups, pastries, subtle background chatter, barista in the background, shelves with coffee beans and mugs, indoor plants, warm tones, elegant attire, confident, charming.
+
+(masterpiece, best quality) Stylish woman, natural pose, snowy landscape, falling snow, snow-covered ground and trees, clear cold sky, soft diffused light, winter attire, warm tones, cozy scarf and gloves, elegant attire, confident, charming.
+
+(masterpiece, best quality) Stylish woman, natural pose, cozy pub, warm ambient lighting, rustic wooden tables, bar counter with stools, bottles and glasses, subtle background chatter, people socializing, warm tones, elegant attire, confident, charming.
+
+(masterpiece, best quality) Stylish woman, natural pose, zoo, lush greenery, enclosures with various animals, walking paths, informational signs, children and families, vibrant atmosphere, warm tones, elegant attire, confident, charming.
+ 	
+(masterpiece, top quality, best quality, official art, beautiful and aesthetic:1.2) 1girl, looking in the camera, black roots of the hair, and purple and blue fade hair, bob cut, (embarrassed, bored, frustrated:1.2) rage, confident, doubtful, suspicious, cyberpunk city background, futuristic night neon city, neon jacket, torn jacket, choker, edge light, hair edge light, rim light, <lora:JuriMS:0.2> <lora:PAseer的天使V1:0.3>
+
+Negative prompt: six fingers, 6 fingers, 7 fingers , seven fingers, overlapping fingers, long fingers, short fingers,, epiCNegative -neg bad-picture-chill-75v asian, chinese, busty, (epicnegative:0.9) AS-YoungV2 AS-YoungV2-neg ERA09NEGV2 GS-DeFeminize-neg, bad hands, 4 hands, 4 legs, 3 legs, 3 arms, malformed legs, malformed arms, deformed legs, deformed arms, slender legs, slender arms, deformed waist, deformed body, bad anatomy,bad proportions
+
+Steps: 25, Sampler: Euler a, CFG scale: 7, Seed: 1298864348, Size: 728x408, Model hash: 3d6c130515, Model: noosphere_v3, Denoising strength: 0.35, Clip skip: 2, Hires upscale: 2, Hires steps: 16, Hires upscaler: 4x_NMKD-Siax_200k, Lora hashes: "JuriMS: e78f4ab184a5, PAseer的天使V1: 66657afe2a3b", TI hashes: "epiCNegative: 88b8f468357b, bad-picture-chill-75v: 7d9cc5f549d7, AS-YoungV2: 714bba6525de, AS-YoungV2-neg: bb190ae47836, ERA09NEGV2: aceb5e1e13b3, GS-DeFeminize-neg: 26bd0d842cc5, epiCNegative: 88b8f468357b, bad-picture-chill-75v: 7d9cc5f549d7, AS-YoungV2: 714bba6525de, AS-YoungV2-neg: bb190ae47836, ERA09NEGV2: aceb5e1e13b3, GS-DeFeminize-neg: 26bd0d842cc5", Version: v1.6.0
+
+https://supagruen.github.io/StableDiffusion-CheatSheet/
+https://docs.google.com/spreadsheets/d/1tzNVWXlNlSwFfRKD3qLl7Mwy_bBqJRFF3PrBY99BY4c/edit#gid=0
+
+https://drive.google.com/drive/folders/1HoZxKUX7WAg7ObqP00R4oIv48sXCEryQ
