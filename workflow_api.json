@@ -10,9 +10,9 @@
   },
   "3": {
     "inputs": {
-      "text": "(Masterpiece, best quality, Ultra-detailed, high definition, Photorealistic, cinematic lighting, Sharp focus, vibrant colors) Sunrise over a pristine beach, golden light reflecting on calm waves, soft pink and orange hues in the sky, gentle waves lapping at the shore, untouched white sand, clear blue water, serene and peaceful atmosphere",
+      "text": "A man wearing a pair of brown boots and khaki pants walk through a forest with dried leaves on the ground and trees in the background with the sun shining through. The man stops and views the horizon",
       "clip": [
-        "102",
+        "110",
         1
       ]
     },
@@ -23,9 +23,9 @@
   },
   "6": {
     "inputs": {
-      "text": "(bad quality, worst quality, Low quality, blurry, Grainy, pixelated, Poor lighting, underexposed, Overexposed, unnatural colors, Out of focus, amateurish, Artificial, unrealistic, Dull, lifeless) Crowded beach, pollution, litter, overcast sky, stormy weather, rough waves, muddy water, dark and dull colors, low resolution, poor lighting, blurry, artificial elements, buildings, people, animals, abstract, unrealistic, monochrome, NSFW\n",
+      "text": "(deformed iris, deformed pupils, semi-realistic, cgi, 3d, render, sketch, cartoon, drawing, anime), text, cropped, out of frame, worst quality, low quality, jpeg artifacts, ugly, duplicate, morbid, mutilated, extra fingers, mutated hands, poorly drawn hands, poorly drawn face, mutation, deformed, blurry, dehydrated, bad anatomy, bad proportions, extra limbs, cloned face, disfigured, gross proportions, malformed limbs, missing arms, missing legs, extra arms, extra legs, fused fingers, too many fingers, long neck",
       "clip": [
-        "102",
+        "110",
         1
       ]
     },
@@ -37,7 +37,7 @@
   "10": {
     "inputs": {
       "samples": [
-        "107",
+        "111",
         0
       ],
       "vae": [
@@ -50,14 +50,94 @@
       "title": "VAE Decode"
     }
   },
+  "50": {
+    "inputs": {
+      "images": [
+        "118",
+        0
+      ]
+    },
+    "class_type": "PreviewImage",
+    "_meta": {
+      "title": "Preview Image"
+    }
+  },
+  "53": {
+    "inputs": {
+      "upscale_method": "nearest-exact",
+      "width": 960,
+      "height": 540,
+      "crop": "disabled",
+      "image": [
+        "125",
+        0
+      ]
+    },
+    "class_type": "ImageScale",
+    "_meta": {
+      "title": "Upscale Image"
+    }
+  },
+  "56": {
+    "inputs": {
+      "pixels": [
+        "53",
+        0
+      ],
+      "vae": [
+        "2",
+        0
+      ]
+    },
+    "class_type": "VAEEncode",
+    "_meta": {
+      "title": "VAE Encode"
+    }
+  },
+  "70": {
+    "inputs": {
+      "control_net_name": "control_v11f1p_sd15_depth_fp16.safetensors"
+    },
+    "class_type": "ControlNetLoaderAdvanced",
+    "_meta": {
+      "title": "Load Advanced ControlNet Model 🛂🅐🅒🅝"
+    }
+  },
+  "72": {
+    "inputs": {
+      "strength": 0.65,
+      "start_percent": 0,
+      "end_percent": 0.9500000000000001,
+      "positive": [
+        "3",
+        0
+      ],
+      "negative": [
+        "6",
+        0
+      ],
+      "control_net": [
+        "70",
+        0
+      ],
+      "image": [
+        "102",
+        0
+      ]
+    },
+    "class_type": "ControlNetApplyAdvanced",
+    "_meta": {
+      "title": "Apply ControlNet (Advanced)"
+    }
+  },
   "93": {
     "inputs": {
-      "model_name": "mm_sd_v15_v2.ckpt",
+      "model_name": "temporaldiff-v1-animatediff.ckpt",
       "beta_schedule": "sqrt_linear (AnimateDiff)",
       "motion_scale": 1,
       "apply_v2_models_properly": false,
       "model": [
-        "102",
+        "110",
         0
       ],
       "context_options": [
@@ -87,18 +167,88 @@
       "title": "Context Options◆Looped Uniform 🎭🅐🅓"
     }
   },
-  "100": {
+  "97": {
     "inputs": {
-      "width": 512,
-      "height": 512,
-      "batch_size": 24
+      "control_net_name": "control_v11p_sd15_openpose_fp16.safetensors"
     },
-    "class_type": "ADE_EmptyLatentImageLarge",
+    "class_type": "ControlNetLoaderAdvanced",
     "_meta": {
-      "title": "Empty Latent Image (Big Batch) 🎭🅐🅓"
+      "title": "Load Advanced ControlNet Model 🛂🅐🅒🅝"
     }
   },
-  "101": {
+  "99": {
+    "inputs": {
+      "strength": 0.9,
+      "start_percent": 0,
+      "end_percent": 1,
+      "positive": [
+        "72",
+        0
+      ],
+      "negative": [
+        "72",
+        1
+      ],
+      "control_net": [
+        "97",
+        0
+      ],
+      "image": [
+        "100",
+        0
+      ]
+    },
+    "class_type": "ControlNetApplyAdvanced",
+    "_meta": {
+      "title": "Apply ControlNet (Advanced)"
+    }
+  },
+  "100": {
+    "inputs": {
+      "detect_hand": "enable",
+      "detect_body": "enable",
+      "detect_face": "enable",
+      "resolution": 512,
+      "bbox_detector": "yolox_l.onnx",
+      "pose_estimator": "dw-ll_ucoco_384_bs5.torchscript.pt",
+      "image": [
+        "53",
+        0
+      ]
+    },
+    "class_type": "DWPreprocessor",
+    "_meta": {
+      "title": "DWPose Estimator"
+    }
+  },
+  "102": {
+    "inputs": {
+      "a": 6.28,
+      "bg_threshold": 0.1,
+      "resolution": 512,
+      "image": [
+        "53",
+        0
+      ]
+    },
+    "class_type": "MiDaS-DepthMapPreprocessor",
+    "_meta": {
+      "title": "MiDaS Depth Map"
+    }
+  },
+  "108": {
+    "inputs": {
+      "directory": "X://path/to/images",
+      "image_load_cap": 0,
+      "skip_first_images": 0,
+      "select_every_nth": 1
+    },
+    "class_type": "VHS_LoadImagesPath",
+    "_meta": {
+      "title": "Load Images (Path) 🎥🅥🅗🅢"
+    }
+  },
+  "109": {
     "inputs": {
       "frame_rate": 8,
       "loop_count": 0,
@@ -119,22 +269,22 @@
       "title": "Video Combine 🎥🅥🅗🅢"
     }
   },
-  "102": {
+  "110": {
     "inputs": {
-      "ckpt_name": "dreamshaper_8.safetensors"
+      "ckpt_name": "realisticVisionV60B1_v51HyperVAE.safetensors"
     },
     "class_type": "CheckpointLoaderSimple",
     "_meta": {
       "title": "Load Checkpoint"
     }
   },
-  "107": {
+  "111": {
     "inputs": {
       "add_noise": "enable",
-      "noise_seed": 621681785065275,
+      "noise_seed": 973023832697861,
       "steps": 24,
       "cfg": 7,
-      "sampler_name": "dpmpp_2m_sde_gpu",
+      "sampler_name": "dpmpp_2m",
       "scheduler": "karras",
       "start_at_step": 0,
       "end_at_step": 10000,
@@ -144,21 +294,116 @@
         0
       ],
       "positive": [
-        "3",
+        "99",
         0
       ],
       "negative": [
-        "6",
-        0
+        "99",
+        1
       ],
       "latent_image": [
-        "100",
+        "56",
         0
       ]
     },
     "class_type": "KSamplerAdvanced",
     "_meta": {
       "title": "KSampler (Advanced)"
+    }
+  },
+  "113": {
+    "inputs": {
+      "video": "86-720.mp4",
+      "force_rate": 0,
+      "force_size": "Disabled",
+      "custom_width": 512,
+      "custom_height": 512,
+      "frame_load_cap": 60,
+      "skip_first_frames": 0,
+      "select_every_nth": 1
+    },
+    "class_type": "VHS_LoadVideo",
+    "_meta": {
+      "title": "Load Video (Upload) 🎥🅥🅗🅢"
+    }
+  },
+  "118": {
+    "inputs": {
+      "split_index": 5,
+      "images": [
+        "53",
+        0
+      ]
+    },
+    "class_type": "VHS_SplitImages",
+    "_meta": {
+      "title": "Split Image Batch 🎥🅥🅗🅢"
+    }
+  },
+  "119": {
+    "inputs": {
+      "images": [
+        "120",
+        0
+      ]
+    },
+    "class_type": "PreviewImage",
+    "_meta": {
+      "title": "Preview Image"
+    }
+  },
+  "120": {
+    "inputs": {
+      "split_index": 5,
+      "images": [
+        "102",
+        0
+      ]
+    },
+    "class_type": "VHS_SplitImages",
+    "_meta": {
+      "title": "Split Image Batch 🎥🅥🅗🅢"
+    }
+  },
+  "121": {
+    "inputs": {
+      "images": [
+        "122",
+        0
+      ]
+    },
+    "class_type": "PreviewImage",
+    "_meta": {
+      "title": "Preview Image"
+    }
+  },
+  "122": {
+    "inputs": {
+      "split_index": 5,
+      "images": [
+        "100",
+        0
+      ]
+    },
+    "class_type": "VHS_SplitImages",
+    "_meta": {
+      "title": "Split Image Batch 🎥🅥🅗🅢"
+    }
+  },
+  "125": {
+    "inputs": {
+      "video": "X://insert/path/here.mp4",
+      "force_rate": 0,
+      "force_size": "Disabled",
+      "custom_width": 512,
+      "custom_height": 512,
+      "frame_load_cap": 60,
+      "skip_first_frames": 0,
+      "select_every_nth": 1
+    },
+    "class_type": "VHS_LoadVideoPath",
+    "_meta": {
+      "title": "Load Video (Path) 🎥🅥🅗🅢"
     }
   }
 }
