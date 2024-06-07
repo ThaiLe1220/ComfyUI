@@ -554,8 +554,8 @@ class ComfyUItoPython:
 
 if __name__ == "__main__":
     # Update class parameters here
-    input_file = "/home/ubuntu/Desktop/Eugene/ComfyUI/workflow_api.json"
-    output_file = "workflow_api.py"
+    input_file = "/home/ubuntu/Desktop/Eugene/ComfyUI/workflow_khoavanloc.json"
+    output_file = "workflow_khoavanloc_api.py"
     queue_size = 1
 
     # Convert ComfyUI workflow to Python

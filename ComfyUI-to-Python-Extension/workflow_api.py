@@ -139,6 +139,13 @@ def read_video_params(file_path: str):
     return video_params
 
 
+def is_video_id_in_output(video_id, output_directory):
+    for filename in os.listdir(output_directory):
+        if f"Mixkit_AD_{video_id}_00001" in filename:
+            return True
+    return False
+
+
 def main():
     import_custom_nodes()
 
@@ -148,6 +155,13 @@ def main():
 
     for params in video_params:
         video_id = params["video_id"]
+
+        if is_video_id_in_output(
+            video_id, "/home/ubuntu/Desktop/Eugene/ComfyUI/output"
+        ):
+            print(f"Skipping video ID {video_id}, already exists in output directory.")
+            continue
+
         description = params["description"]
         width = int(params["width"] * 3 / 4)
         height = int(params["height"] * 3 / 4)
@@ -181,7 +195,7 @@ def main():
                 force_size="Disabled",
                 custom_width=width,
                 custom_height=height,
-                frame_load_cap=60,
+                frame_load_cap=48,
                 skip_first_frames=60,
                 select_every_nth=1,
             )
