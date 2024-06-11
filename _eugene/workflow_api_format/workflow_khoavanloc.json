@@ -1,11 +1,11 @@
 {
   "3": {
     "inputs": {
-      "seed": 831540149451588,
-      "steps": 35,
-      "cfg": 7,
-      "sampler_name": "dpmpp_2m",
-      "scheduler": "normal",
+      "seed": 307341150010886,
+      "steps": 6,
+      "cfg": 1.5,
+      "sampler_name": "dpmpp_sde",
+      "scheduler": "karras",
       "denoise": 1,
       "model": [
         "4",
@@ -31,7 +31,7 @@
   },
   "4": {
     "inputs": {
-      "ckpt_name": "Juggernaut_X_RunDiffusion.safetensors"
+      "ckpt_name": "realisticVisionV60B1_v51HyperVAE.safetensors"
     },
     "class_type": "CheckpointLoaderSimple",
     "_meta": {
@@ -51,7 +51,7 @@
   },
   "6": {
     "inputs": {
-      "text": "beautiful scenery nature glass bottle landscape, , purple galaxy bottle,",
+      "text": "khoa van loc",
       "clip": [
         "4",
         1
@@ -64,7 +64,7 @@
   },
   "7": {
     "inputs": {
-      "text": "bad eyes, cgi, airbrushed, plastic, deformed, watermark",
+      "text": "(nsfw, naked, nude, deformed iris, deformed pupils, semi-realistic, cgi, 3d, render, sketch, cartoon, drawing, anime, mutated hands and fingers:1.4), (deformed, distorted, disfigured:1.3), poorly drawn, bad anatomy, wrong anatomy, extra limb, missing limb, floating limbs, disconnected limbs, mutation, mutated, ugly, disgusting, amputation",
       "clip": [
         "4",
         1
