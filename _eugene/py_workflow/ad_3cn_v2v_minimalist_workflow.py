@@ -121,7 +121,6 @@ from nodes import NODE_CLASS_MAPPINGS, VAEEncode
 
 
 def generate_video_from_prompt(video_path: str, positive_prompt: str):
-    import_custom_nodes()
 
     lora_stacker = NODE_CLASS_MAPPINGS["LoRA Stacker"]()
     lora_stacker_40 = lora_stacker.lora_stacker(
@@ -347,6 +346,8 @@ if __name__ == "__main__":
     )
     output_dir = "/home/ubuntu/Desktop/Eugene/ComfyUI/output"
     video_prompts = read_data_file(data_file_path)
+
+    import_custom_nodes()
 
     for index, (video_id, positive_prompt) in enumerate(video_prompts, start=1):
         output_file = os.path.join(output_dir, f"mixkit_v2_{index:05d}.mp4")
