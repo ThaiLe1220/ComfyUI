@@ -92,3 +92,8 @@ https://drive.google.com/drive/folders/1HoZxKUX7WAg7ObqP00R4oIv48sXCEryQ
 
 https://stable-diffusion-art.com/animatediff/
 
+
+
+pip install spandrel
+pip install xformers
+pip install --upgrade opencv-contrib-python
