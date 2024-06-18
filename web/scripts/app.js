@@ -1800,7 +1800,7 @@ export class ComfyApp {
 	 * @param {*} graphData A serialized graph object
 	 * @param { boolean } clean If the graph state, e.g. images, should be cleared
 	 */
-	async loadGraphData(graphData, clean = true) {
+	async loadGraphData(graphData, clean = true, restore_view = true) {
 		if (clean !== false) {
 			this.clean();
 		}
@@ -1836,7 +1836,7 @@ export class ComfyApp {
 
 		try {
 			this.graph.configure(graphData);
-			if (this.enableWorkflowViewRestore.value && graphData.extra?.ds) {
+			if (restore_view && this.enableWorkflowViewRestore.value && graphData.extra?.ds) {
 				this.canvas.ds.offset = graphData.extra.ds.offset;
 				this.canvas.ds.scale = graphData.extra.ds.scale;
 			}
@@ -2238,7 +2238,8 @@ export class ComfyApp {
 			const data = apiData[id];
 			const node = LiteGraph.createNode(data.class_type);
 			node.id = isNaN(+id) ? id : +id;
-			graph.add(node);
+			node.title = data._meta?.title ?? node.title
+			app.graph.add(node);
 		}
 
 		for (const id of ids) {
