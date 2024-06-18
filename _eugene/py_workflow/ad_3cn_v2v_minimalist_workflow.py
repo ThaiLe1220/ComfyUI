@@ -3,6 +3,7 @@ import random
 import sys
 from typing import Sequence, Mapping, Any, Union, List, Tuple
 import torch
+import time
 
 
 def get_value_at_index(obj: Union[Sequence, Mapping], index: int) -> Any:
@@ -120,75 +121,81 @@ def read_data_file(data_file_path: str) -> List[Tuple[str, str]]:
 from nodes import NODE_CLASS_MAPPINGS, VAEEncode
 
 
+start_time = time.time()
+import_custom_nodes()
+end_time = time.time()
+elapsed_time = end_time - start_time
+
+print(f"[Workflow] Import Custome Node in {elapsed_time:.2f} seconds")
+
+lora_stacker = NODE_CLASS_MAPPINGS["LoRA Stacker"]()
+lora_stacker_40 = lora_stacker.lora_stacker(
+    input_mode="advanced",
+    lora_count=1,
+    lora_name_1="add_detail.safetensors",
+    model_str_1=0.5,
+    clip_str_1=0,
+)
+
+controlnetloaderadvanced = NODE_CLASS_MAPPINGS["ControlNetLoaderAdvanced"]()
+controlnetloaderadvanced_43 = controlnetloaderadvanced.load_controlnet(
+    control_net_name="control_v11p_sd15_lineart_fp16.safetensors"
+)
+
+controlnetloaderadvanced_49 = controlnetloaderadvanced.load_controlnet(
+    control_net_name="control_v11p_sd15_softedge_fp16.safetensors"
+)
+
+controlnetloaderadvanced_52 = controlnetloaderadvanced.load_controlnet(
+    control_net_name="control_v11f1p_sd15_depth_fp16.safetensors"
+)
+
+ade_loadanimatediffmodel = NODE_CLASS_MAPPINGS["ADE_LoadAnimateDiffModel"]()
+ade_loadanimatediffmodel_83 = ade_loadanimatediffmodel.load_motion_model(
+    model_name="AnimateLCM_sd15_t2v.ckpt"
+)
+
+ade_animatediffsamplingsettings = NODE_CLASS_MAPPINGS[
+    "ADE_AnimateDiffSamplingSettings"
+]()
+ade_animatediffsamplingsettings_86 = ade_animatediffsamplingsettings.create_settings(
+    batch_offset=0,
+    noise_type="default",
+    seed_gen="comfy",
+    seed_offset=0,
+    adapt_denoise_steps=True,
+)
+
+ade_loopeduniformcontextoptions = NODE_CLASS_MAPPINGS[
+    "ADE_LoopedUniformContextOptions"
+]()
+ade_loopeduniformcontextoptions_89 = ade_loopeduniformcontextoptions.create_options(
+    context_length=16,
+    context_stride=1,
+    context_overlap=4,
+    closed_loop=False,
+    fuse_method="pyramid",
+    use_on_equal_length=False,
+    start_percent=0,
+    guarantee_steps=1,
+)
+
+ade_useevolvedsampling = NODE_CLASS_MAPPINGS["ADE_UseEvolvedSampling"]()
+ksampler_efficient = NODE_CLASS_MAPPINGS["KSampler (Efficient)"]()
+vhs_videocombine = NODE_CLASS_MAPPINGS["VHS_VideoCombine"]()
+
+layerutility_purgevram = NODE_CLASS_MAPPINGS["LayerUtility: PurgeVRAM"]()
+
+ade_applyanimatediffmodelsimple = NODE_CLASS_MAPPINGS[
+    "ADE_ApplyAnimateDiffModelSimple"
+]()
+
+ade_applyanimatediffmodelsimple_88 = ade_applyanimatediffmodelsimple.apply_motion_model(
+    motion_model=get_value_at_index(ade_loadanimatediffmodel_83, 0)
+)
+
+
 def generate_video_from_prompt(video_path: str, positive_prompt: str):
-
-    lora_stacker = NODE_CLASS_MAPPINGS["LoRA Stacker"]()
-    lora_stacker_40 = lora_stacker.lora_stacker(
-        input_mode="advanced",
-        lora_count=1,
-        lora_name_1="add_detail.safetensors",
-        model_str_1=0.5,
-        clip_str_1=0,
-    )
-
-    controlnetloaderadvanced = NODE_CLASS_MAPPINGS["ControlNetLoaderAdvanced"]()
-    controlnetloaderadvanced_43 = controlnetloaderadvanced.load_controlnet(
-        control_net_name="control_v11p_sd15_lineart_fp16.safetensors"
-    )
-
-    controlnetloaderadvanced_49 = controlnetloaderadvanced.load_controlnet(
-        control_net_name="control_v11p_sd15_softedge_fp16.safetensors"
-    )
-
-    controlnetloaderadvanced_52 = controlnetloaderadvanced.load_controlnet(
-        control_net_name="control_v11f1p_sd15_depth_fp16.safetensors"
-    )
-
-    ade_loadanimatediffmodel = NODE_CLASS_MAPPINGS["ADE_LoadAnimateDiffModel"]()
-    ade_loadanimatediffmodel_83 = ade_loadanimatediffmodel.load_motion_model(
-        model_name="AnimateLCM_sd15_t2v.ckpt"
-    )
-
-    ade_animatediffsamplingsettings = NODE_CLASS_MAPPINGS[
-        "ADE_AnimateDiffSamplingSettings"
-    ]()
-    ade_animatediffsamplingsettings_86 = (
-        ade_animatediffsamplingsettings.create_settings(
-            batch_offset=0,
-            noise_type="default",
-            seed_gen="comfy",
-            seed_offset=0,
-            adapt_denoise_steps=True,
-        )
-    )
-
-    ade_loopeduniformcontextoptions = NODE_CLASS_MAPPINGS[
-        "ADE_LoopedUniformContextOptions"
-    ]()
-    ade_loopeduniformcontextoptions_89 = ade_loopeduniformcontextoptions.create_options(
-        context_length=16,
-        context_stride=1,
-        context_overlap=4,
-        closed_loop=False,
-        fuse_method="pyramid",
-        use_on_equal_length=False,
-        start_percent=0,
-        guarantee_steps=1,
-    )
-
-    layerutility_purgevram = NODE_CLASS_MAPPINGS["LayerUtility: PurgeVRAM"]()
-    ade_applyanimatediffmodelsimple = NODE_CLASS_MAPPINGS[
-        "ADE_ApplyAnimateDiffModelSimple"
-    ]()
-    ade_useevolvedsampling = NODE_CLASS_MAPPINGS["ADE_UseEvolvedSampling"]()
-    ksampler_efficient = NODE_CLASS_MAPPINGS["KSampler (Efficient)"]()
-    vhs_videocombine = NODE_CLASS_MAPPINGS["VHS_VideoCombine"]()
-
-    ade_applyanimatediffmodelsimple_88 = (
-        ade_applyanimatediffmodelsimple.apply_motion_model(
-            motion_model=get_value_at_index(ade_loadanimatediffmodel_83, 0)
-        )
-    )
 
     with torch.inference_mode():
         vhs_loadvideopath = NODE_CLASS_MAPPINGS["VHS_LoadVideoPath"]()
@@ -198,7 +205,7 @@ def generate_video_from_prompt(video_path: str, positive_prompt: str):
             force_size="Disabled",
             custom_width=0,
             custom_height=0,
-            frame_load_cap=120,
+            frame_load_cap=100,
             skip_first_frames=24,
             select_every_nth=2,
         )
@@ -342,12 +349,10 @@ def generate_video_from_prompt(video_path: str, positive_prompt: str):
 
 if __name__ == "__main__":
     data_file_path = (
-        "/home/ubuntu/Desktop/Eugene/ComfyUI/input/__mixkit_v2__/data_c.txt"
+        "/home/ubuntu/Desktop/eugene/ComfyUI/input/__mixkit_v2__/data_c.txt"
     )
-    output_dir = "/home/ubuntu/Desktop/Eugene/ComfyUI/output"
+    output_dir = "/home/ubuntu/Desktop/eugene/ComfyUI/output"
     video_prompts = read_data_file(data_file_path)
-
-    import_custom_nodes()
 
     for index, (video_id, positive_prompt) in enumerate(video_prompts, start=1):
         output_file = os.path.join(output_dir, f"mixkit_v2_{index:05d}.mp4")
@@ -357,12 +362,19 @@ if __name__ == "__main__":
             continue
 
         video_path = (
-            f"/home/ubuntu/Desktop/Eugene/ComfyUI/input/__mixkit_v2__/{video_id}"
+            f"/home/ubuntu/Desktop/eugene/ComfyUI/input/__mixkit_v2__/{video_id}"
         )
         print(
             f"[Workflow] Processing video: {video_id}, Description: {positive_prompt}"
         )
+
+        start_time = time.time()
         generate_video_from_prompt(video_path, positive_prompt)
-        print(f"[Workflow] Finished processing video: {video_id}")
+        end_time = time.time()
+
+        elapsed_time = end_time - start_time
+        print(
+            f"[Workflow] Finished processing video: {video_id} in {elapsed_time:.2f} seconds"
+        )
 
     print("All videos processed.")
