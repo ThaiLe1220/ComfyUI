@@ -20,3 +20,5 @@ venv/
 *.log
 
 /styles/
+*.zip
+
