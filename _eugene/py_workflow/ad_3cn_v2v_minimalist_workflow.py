@@ -134,8 +134,13 @@ lora_stacker_40 = lora_stacker.lora_stacker(
     lora_count=1,
     lora_name_1="add_detail.safetensors",
     model_str_1=0.5,
-    clip_str_1=0,
+    clip_str_1=0.5,
 )
+
+vhs_loadvideopath = NODE_CLASS_MAPPINGS["VHS_LoadVideoPath"]()
+jwimageresizebyshorterside = NODE_CLASS_MAPPINGS["JWImageResizeByShorterSide"]()
+imagepass = NODE_CLASS_MAPPINGS["ImagePass"]()
+get_resolution_crystools = NODE_CLASS_MAPPINGS["Get resolution [Crystools]"]()
 
 controlnetloaderadvanced = NODE_CLASS_MAPPINGS["ControlNetLoaderAdvanced"]()
 controlnetloaderadvanced_43 = controlnetloaderadvanced.load_controlnet(
@@ -149,6 +154,13 @@ controlnetloaderadvanced_49 = controlnetloaderadvanced.load_controlnet(
 controlnetloaderadvanced_52 = controlnetloaderadvanced.load_controlnet(
     control_net_name="control_v11f1p_sd15_depth_fp16.safetensors"
 )
+
+depthanythingpreprocessor = NODE_CLASS_MAPPINGS["DepthAnythingPreprocessor"]()
+aio_preprocessor = NODE_CLASS_MAPPINGS["AIO_Preprocessor"]()
+control_net_stacker = NODE_CLASS_MAPPINGS["Control Net Stacker"]()
+
+
+efficient_loader = NODE_CLASS_MAPPINGS["Efficient Loader"]()
 
 ade_loadanimatediffmodel = NODE_CLASS_MAPPINGS["ADE_LoadAnimateDiffModel"]()
 ade_loadanimatediffmodel_83 = ade_loadanimatediffmodel.load_motion_model(
@@ -180,6 +192,8 @@ ade_loopeduniformcontextoptions_89 = ade_loopeduniformcontextoptions.create_opti
     guarantee_steps=1,
 )
 
+vaeencode = VAEEncode()
+
 ade_useevolvedsampling = NODE_CLASS_MAPPINGS["ADE_UseEvolvedSampling"]()
 ksampler_efficient = NODE_CLASS_MAPPINGS["KSampler (Efficient)"]()
 vhs_videocombine = NODE_CLASS_MAPPINGS["VHS_VideoCombine"]()
@@ -198,10 +212,9 @@ ade_applyanimatediffmodelsimple_88 = ade_applyanimatediffmodelsimple.apply_motio
 def generate_video_from_prompt(video_path: str, positive_prompt: str):
 
     with torch.inference_mode():
-        vhs_loadvideopath = NODE_CLASS_MAPPINGS["VHS_LoadVideoPath"]()
         vhs_loadvideopath_10 = vhs_loadvideopath.load_video(
             video=video_path,
-            force_rate=24,
+            force_rate=20,
             force_size="Disabled",
             custom_width=0,
             custom_height=0,
@@ -210,31 +223,26 @@ def generate_video_from_prompt(video_path: str, positive_prompt: str):
             select_every_nth=2,
         )
 
-        jwimageresizebyshorterside = NODE_CLASS_MAPPINGS["JWImageResizeByShorterSide"]()
         jwimageresizebyshorterside_14 = jwimageresizebyshorterside.execute(
             size=512,
             interpolation_mode="nearest exact",
             image=get_value_at_index(vhs_loadvideopath_10, 0),
         )
 
-        imagepass = NODE_CLASS_MAPPINGS["ImagePass"]()
         imagepass_15 = imagepass.passthrough(
             image=get_value_at_index(jwimageresizebyshorterside_14, 0)
         )
 
-        get_resolution_crystools = NODE_CLASS_MAPPINGS["Get resolution [Crystools]"]()
         get_resolution_crystools_17 = get_resolution_crystools.execute(
             image=get_value_at_index(imagepass_15, 0), unique_id=13095250626247549117
         )
 
-        depthanythingpreprocessor = NODE_CLASS_MAPPINGS["DepthAnythingPreprocessor"]()
         depthanythingpreprocessor_55 = depthanythingpreprocessor.execute(
             ckpt_name="depth_anything_vitl14.pth",
             resolution=512,
             image=get_value_at_index(imagepass_15, 0),
         )
 
-        aio_preprocessor = NODE_CLASS_MAPPINGS["AIO_Preprocessor"]()
         aio_preprocessor_48 = aio_preprocessor.execute(
             preprocessor="HEDPreprocessor",
             resolution=512,
@@ -247,7 +255,6 @@ def generate_video_from_prompt(video_path: str, positive_prompt: str):
             image=get_value_at_index(imagepass_15, 0),
         )
 
-        control_net_stacker = NODE_CLASS_MAPPINGS["Control Net Stacker"]()
         control_net_stacker_44 = control_net_stacker.control_net_stacker(
             strength=0.65,
             start_percent=0,
@@ -274,7 +281,6 @@ def generate_video_from_prompt(video_path: str, positive_prompt: str):
             cnet_stack=get_value_at_index(control_net_stacker_50, 0),
         )
 
-        efficient_loader = NODE_CLASS_MAPPINGS["Efficient Loader"]()
         efficient_loader_38 = efficient_loader.efficientloader(
             ckpt_name="realisticVisionV60B1_v51HyperVAE.safetensors",
             vae_name="vae-ft-mse-840000-ema-pruned.safetensors",
@@ -293,7 +299,6 @@ def generate_video_from_prompt(video_path: str, positive_prompt: str):
             cnet_stack=get_value_at_index(control_net_stacker_53, 0),
         )
 
-        vaeencode = VAEEncode()
         vaeencode_80 = vaeencode.encode(
             pixels=get_value_at_index(imagepass_15, 0),
             vae=get_value_at_index(efficient_loader_38, 4),
@@ -347,6 +352,8 @@ def generate_video_from_prompt(video_path: str, positive_prompt: str):
         )
 
 
+import itertools
+
 if __name__ == "__main__":
     data_file_path = (
         "/home/ubuntu/Desktop/eugene/ComfyUI/input/__mixkit_v2__/data_c.txt"
@@ -354,7 +361,10 @@ if __name__ == "__main__":
     output_dir = "/home/ubuntu/Desktop/eugene/ComfyUI/output"
     video_prompts = read_data_file(data_file_path)
 
-    for index, (video_id, positive_prompt) in enumerate(video_prompts, start=1):
+    # Skip the first 2639 items
+    skipped_prompts = itertools.islice(video_prompts, 2639, None)
+
+    for index, (video_id, positive_prompt) in enumerate(skipped_prompts, start=2640):
         output_file = os.path.join(output_dir, f"mixkit_v2_{index:05d}.mp4")
 
         if os.path.exists(output_file):
