@@ -6,6 +6,8 @@ import os
 import importlib.util
 import folder_paths
 import time
+from comfy.cli_args import args
+
 
 
 def execute_prestartup_script():
@@ -19,6 +21,9 @@ def execute_prestartup_script():
         except Exception as e:
             print(f"Failed to execute startup-script: {script_path} / {e}")
         return False
+
+    if args.disable_all_custom_nodes:
+        return
 
     node_paths = folder_paths.get_folder_paths("custom_nodes")
     for custom_node_path in node_paths:
@@ -87,7 +92,7 @@ import yaml
 import execution
 import server
 from server import BinaryEventTypes
-from nodes import init_custom_nodes
+from nodes import init_builtin_extra_nodes, init_external_custom_nodes
 import comfy.model_management
 
 
@@ -252,7 +257,11 @@ if __name__ == "__main__":
         for config_path in itertools.chain(*args.extra_model_paths_config):
             load_extra_path_config(config_path)
 
-    init_custom_nodes()
+    init_builtin_extra_nodes()
+    if not args.disable_all_custom_nodes:
+        init_external_custom_nodes()
+    else:
+        logging.info("Skipping loading of custom nodes")
 
     cuda_malloc_warning()
 
