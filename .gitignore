@@ -25,3 +25,5 @@ venv/
 
 mixkit*/
 *.log
+
+ComfyUI-to-Python-Extension
