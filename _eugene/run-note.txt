@@ -97,3 +97,7 @@ https://stable-diffusion-art.com/animatediff/
 pip install spandrel
 pip install xformers
 pip install --upgrade opencv-contrib-python
+
+
+
+git fetch upstream

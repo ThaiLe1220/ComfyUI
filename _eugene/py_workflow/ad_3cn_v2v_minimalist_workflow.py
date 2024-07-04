@@ -118,6 +118,24 @@ def read_data_file(data_file_path: str) -> List[Tuple[str, str]]:
     return video_prompts
 
 
+import torch.cuda
+import gc
+import comfy.model_management
+
+
+def purge_cache():
+    if torch.cuda.is_available():
+        torch.cuda.empty_cache()
+        torch.cuda.ipc_collect()
+    return (None,)
+
+
+def purge_model():
+    comfy.model_management.unload_all_models()
+    comfy.model_management.soft_empty_cache()
+    return (None,)
+
+
 from nodes import NODE_CLASS_MAPPINGS, VAEEncode
 
 
@@ -133,8 +151,8 @@ lora_stacker_40 = lora_stacker.lora_stacker(
     input_mode="advanced",
     lora_count=1,
     lora_name_1="add_detail.safetensors",
-    model_str_1=0.5,
-    clip_str_1=0.5,
+    model_str_1=0.7,
+    clip_str_1=0.7,
 )
 
 vhs_loadvideopath = NODE_CLASS_MAPPINGS["VHS_LoadVideoPath"]()
@@ -198,8 +216,6 @@ ade_useevolvedsampling = NODE_CLASS_MAPPINGS["ADE_UseEvolvedSampling"]()
 ksampler_efficient = NODE_CLASS_MAPPINGS["KSampler (Efficient)"]()
 vhs_videocombine = NODE_CLASS_MAPPINGS["VHS_VideoCombine"]()
 
-layerutility_purgevram = NODE_CLASS_MAPPINGS["LayerUtility: PurgeVRAM"]()
-
 ade_applyanimatediffmodelsimple = NODE_CLASS_MAPPINGS[
     "ADE_ApplyAnimateDiffModelSimple"
 ]()
@@ -214,7 +230,7 @@ def generate_video_from_prompt(video_path: str, positive_prompt: str):
     with torch.inference_mode():
         vhs_loadvideopath_10 = vhs_loadvideopath.load_video(
             video=video_path,
-            force_rate=20,
+            force_rate=24,
             force_size="Disabled",
             custom_width=0,
             custom_height=0,
@@ -287,7 +303,7 @@ def generate_video_from_prompt(video_path: str, positive_prompt: str):
             clip_skip=-1,
             lora_name="lcm/SD1.5/pytorch_lora_weights.safetensors",
             lora_model_strength=0.5,
-            lora_clip_strength=0,
+            lora_clip_strength=0.5,
             positive=f"(realistic photo), {positive_prompt}",
             negative="(nsfw:1.25), (nipples:1.25), (low quality, worst quality:1.2), low-resolution, lowres, jpeg artifacts, compression artifacts, poorly drawn, downsampling, aliasing, distorted, pixelated, fake, hyper, glitch, distortion, text, watermark, signature, user name, artist name, moir pattern, blurry, glossy, ugly, twisted, excessive, exaggerated pose, exaggerated limbs, grainy, duplicate, error, beginner, overexposed, high-contrast, bad-contrast, selfie, handy, phone, embedding:badhandv4, naked, nude, deformed iris, deformed pupils, semi-realistic, cgi, 3d, render, sketch, cartoon, drawing, anime, mutated hands and fingers:1.4, deformed, distorted, disfigured:1.3, bad anatomy, wrong anatomy, extra limb, missing limb, floating limbs, disconnected limbs, mutation, mutated, disgusting, amputation\n",
             token_normalization="mean",
@@ -304,12 +320,6 @@ def generate_video_from_prompt(video_path: str, positive_prompt: str):
             vae=get_value_at_index(efficient_loader_38, 4),
         )
 
-        layerutility_purgevram_16 = layerutility_purgevram.purge_vram(
-            purge_cache=True,
-            purge_models=True,
-            anything=get_value_at_index(imagepass_15, 0),
-        )
-
         ade_useevolvedsampling_94 = ade_useevolvedsampling.use_evolved_sampling(
             beta_schedule="lcm >> sqrt_linear",
             model=get_value_at_index(efficient_loader_38, 0),
@@ -324,7 +334,7 @@ def generate_video_from_prompt(video_path: str, positive_prompt: str):
             cfg=1.5,
             sampler_name="lcm",
             scheduler="sgm_uniform",
-            denoise=0.8,
+            denoise=0.9,
             preview_method="none",
             vae_decode="true",
             model=get_value_at_index(ade_useevolvedsampling_94, 0),
@@ -335,7 +345,7 @@ def generate_video_from_prompt(video_path: str, positive_prompt: str):
         )
 
         vhs_videocombine_111 = vhs_videocombine.combine_video(
-            frame_rate=24,
+            frame_rate=20,
             loop_count=0,
             filename_prefix="mixkit_v2",
             format="video/h264-mp4",
@@ -343,12 +353,6 @@ def generate_video_from_prompt(video_path: str, positive_prompt: str):
             save_output=True,
             images=get_value_at_index(ksampler_efficient_81, 5),
             unique_id=9989530071036380741,
-        )
-
-        layerutility_purgevram_138 = layerutility_purgevram.purge_vram(
-            purge_cache=True,
-            purge_models=True,
-            anything=get_value_at_index(ksampler_efficient_81, 5),
         )
 
 
@@ -363,8 +367,11 @@ if __name__ == "__main__":
 
     # Skip the first 2639 items
     skipped_prompts = itertools.islice(video_prompts, 2639, None)
+    purge_cache()
+    purge_model()
 
     for index, (video_id, positive_prompt) in enumerate(skipped_prompts, start=2640):
+        purge_cache()
         output_file = os.path.join(output_dir, f"mixkit_v2_{index:05d}.mp4")
 
         if os.path.exists(output_file):
