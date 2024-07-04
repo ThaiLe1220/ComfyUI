@@ -41,20 +41,6 @@
       "title": "ImagePass"
     }
   },
-  "16": {
-    "inputs": {
-      "purge_cache": true,
-      "purge_models": true,
-      "anything": [
-        "15",
-        0
-      ]
-    },
-    "class_type": "LayerUtility: PurgeVRAM",
-    "_meta": {
-      "title": "LayerUtility: Purge VRAM"
-    }
-  },
   "17": {
     "inputs": {
       "image": [
