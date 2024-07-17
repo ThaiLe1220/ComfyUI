@@ -17,8 +17,6 @@ git clone https://github.com/ltdrdata/ComfyUI-Manager.git
 
 python main.py
 
-
-
 video sources:
 https://mixkit.co/ 
  
@@ -36,11 +34,32 @@ https://drive.google.com/drive/folders/1HoZxKUX7WAg7ObqP00R4oIv48sXCEryQ
 https://stable-diffusion-art.com/animatediff/
 
 
-
 pip install spandrel
 pip install xformers
 pip install --upgrade opencv-contrib-python
 
-
-
 git fetch upstream
+
+
+
+#!/bin/bash
+
+# Path to your Python script
+SCRIPT_PATH="????"
+
+# Function to run the script
+run_script() {
+    python3 $SCRIPT_PATH
+}
+
+# Loop to monitor and restart the script
+while true; do
+    run_script
+    echo "Script has stopped. Restarting in 5 seconds..."
+    sleep 5
+done
+
+
+
+chmod +x monitor_script.sh
+./monitor_script.sh
