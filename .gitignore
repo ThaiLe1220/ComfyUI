@@ -17,14 +17,5 @@ venv/
 !/web/extensions/core/
 /tests-ui/data/object_info.json
 /user/
-
 *.log
-
-/styles/
-*.zip
-
-mixkit*/
-*.log
-
-
 web_custom_versions/
