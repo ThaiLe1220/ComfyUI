@@ -19,3 +19,7 @@ venv/
 /user/
 *.log
 web_custom_versions/
+
+
+*.csv
+*.zip
