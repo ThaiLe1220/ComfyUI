@@ -67,7 +67,6 @@ import shutil
 import threading
 import gc
 
-from comfy.cli_args import args
 import logging
 
 if os.name == "nt":
@@ -86,13 +85,19 @@ if __name__ == "__main__":
 
     import cuda_malloc
 
+if args.windows_standalone_build:
+    try:
+        import fix_torch
+    except:
+        pass
+
 import comfy.utils
 import yaml
 
 import execution
 import server
 from server import BinaryEventTypes
-from nodes import init_builtin_extra_nodes, init_external_custom_nodes
+import nodes
 import comfy.model_management
 
 
@@ -257,11 +262,7 @@ if __name__ == "__main__":
         for config_path in itertools.chain(*args.extra_model_paths_config):
             load_extra_path_config(config_path)
 
-    init_builtin_extra_nodes()
-    if not args.disable_all_custom_nodes:
-        init_external_custom_nodes()
-    else:
-        logging.info("Skipping loading of custom nodes")
+    nodes.init_extra_nodes(init_custom_nodes=not args.disable_all_custom_nodes)
 
     cuda_malloc_warning()
 
