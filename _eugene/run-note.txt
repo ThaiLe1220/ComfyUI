@@ -63,3 +63,22 @@ done
 
 chmod +x monitor_script.sh
 ./monitor_script.sh
+
+
+
+
+conda create --name comfyui python=3.10 -y
+
+pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu118 
+pip install torch torchvision torchaudio --extra-index-url https://download.pytorch.org/whl/cu121
+
+
+conda install pytorch==2.2.2 torchvision==0.17.2 torchaudio==2.2.2 pytorch-cuda=11.8 -c pytorch -c nvidia
+
+python -c "import torch; print(torch.__version__); print(torch.cuda.is_available())"
+
+
+
+pip install opencv-python dlib omegaconf numba hydra-core insightface google-generativeai ollama colorama deepdiff lpips blend_modes addict numexpr modelscope ffmpeg-python yapf pynvml transparent_background
+
+
