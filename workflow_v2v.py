@@ -5,6 +5,7 @@ from typing import Sequence, Mapping, Any, Union
 import torch
 import itertools
 import json
+import numpy as np
 
 
 def get_value_at_index(obj: Union[Sequence, Mapping], index: int) -> Any:
@@ -138,9 +139,9 @@ def read_data_file(data_file_path: str) -> List[Tuple[str, str]]:
     with open(data_file_path, "r", encoding="utf-8") as file:
         for line in file:
             parts = line.strip().split("|")
-            if len(parts) == 2:
-                video_id, prompt = parts
-                video_prompts.append((video_id, prompt))
+            if len(parts) == 3:
+                video_name, prompt, human_presence = parts
+                video_prompts.append((video_name, prompt, human_presence))
     return video_prompts
 
 
@@ -148,39 +149,57 @@ start_time = time.time()
 import_custom_nodes()
 end_time = time.time()
 elapsed_time = end_time - start_time
-
 print(f"[Workflow] Import Custome Node in {elapsed_time:.2f} seconds")
 
+start_time = time.time()
+vhs_loadvideopath = NODE_CLASS_MAPPINGS["VHS_LoadVideoPath"]()
+get_resolution_crystools = NODE_CLASS_MAPPINGS["Get resolution [Crystools]"]()
+aio_preprocessor = NODE_CLASS_MAPPINGS["AIO_Preprocessor"]()
+depthanythingpreprocessor = NODE_CLASS_MAPPINGS["DepthAnythingPreprocessor"]()
+controlnetloaderadvanced = NODE_CLASS_MAPPINGS["ControlNetLoaderAdvanced"]()
+control_net_stacker = NODE_CLASS_MAPPINGS["Control Net Stacker"]()
+ade_loadanimatediffmodel = NODE_CLASS_MAPPINGS["ADE_LoadAnimateDiffModel"]()
+ade_animatediffsamplingsettings = NODE_CLASS_MAPPINGS[
+    "ADE_AnimateDiffSamplingSettings"
+]()
+ade_useevolvedsampling = NODE_CLASS_MAPPINGS["ADE_UseEvolvedSampling"]()
+ade_applyanimatediffmodelsimple = NODE_CLASS_MAPPINGS[
+    "ADE_ApplyAnimateDiffModelSimple"
+]()
+ade_loopeduniformcontextoptions = NODE_CLASS_MAPPINGS[
+    "ADE_LoopedUniformContextOptions"
+]()
 lora_stacker = NODE_CLASS_MAPPINGS["LoRA Stacker"]()
+efficient_loader = NODE_CLASS_MAPPINGS["Efficient Loader"]()
+ksampler_efficient = NODE_CLASS_MAPPINGS["KSampler (Efficient)"]()
+vhs_videocombine = NODE_CLASS_MAPPINGS["VHS_VideoCombine"]()
+
+# Setup Loras
 lora_stacker_40 = lora_stacker.lora_stacker(
     input_mode="advanced",
-    lora_count=1,
+    lora_count=2,
     lora_name_1="add_detail.safetensors",
     model_str_1=0.5,
-    clip_str_1=0,
+    clip_str_1=0.5,
+    lora_name_2="depth_of_field_slider_v1.safetensors",
+    model_str_2=1.5,
+    clip_str_2=1.5,
 )
-
-controlnetloaderadvanced = NODE_CLASS_MAPPINGS["ControlNetLoaderAdvanced"]()
+# Load controlnet models
 controlnetloaderadvanced_43 = controlnetloaderadvanced.load_controlnet(
     control_net_name="control_v11p_sd15_lineart_fp16.safetensors"
 )
-
 controlnetloaderadvanced_49 = controlnetloaderadvanced.load_controlnet(
     control_net_name="control_v11p_sd15_softedge_fp16.safetensors"
 )
-
 controlnetloaderadvanced_52 = controlnetloaderadvanced.load_controlnet(
     control_net_name="control_v11f1p_sd15_depth_fp16.safetensors"
 )
 
-ade_loadanimatediffmodel = NODE_CLASS_MAPPINGS["ADE_LoadAnimateDiffModel"]()
+# Setup Animatediff
 ade_loadanimatediffmodel_83 = ade_loadanimatediffmodel.load_motion_model(
     model_name="AnimateLCM_sd15_t2v.ckpt"
 )
-
-ade_animatediffsamplingsettings = NODE_CLASS_MAPPINGS[
-    "ADE_AnimateDiffSamplingSettings"
-]()
 ade_animatediffsamplingsettings_86 = ade_animatediffsamplingsettings.create_settings(
     batch_offset=0,
     noise_type="default",
@@ -188,10 +207,6 @@ ade_animatediffsamplingsettings_86 = ade_animatediffsamplingsettings.create_sett
     seed_offset=0,
     adapt_denoise_steps=True,
 )
-
-ade_loopeduniformcontextoptions = NODE_CLASS_MAPPINGS[
-    "ADE_LoopedUniformContextOptions"
-]()
 ade_loopeduniformcontextoptions_89 = ade_loopeduniformcontextoptions.create_options(
     context_length=16,
     context_stride=1,
@@ -202,109 +217,114 @@ ade_loopeduniformcontextoptions_89 = ade_loopeduniformcontextoptions.create_opti
     start_percent=0,
     guarantee_steps=1,
 )
-
-ade_useevolvedsampling = NODE_CLASS_MAPPINGS["ADE_UseEvolvedSampling"]()
-ksampler_efficient = NODE_CLASS_MAPPINGS["KSampler (Efficient)"]()
-vhs_videocombine = NODE_CLASS_MAPPINGS["VHS_VideoCombine"]()
-
-ade_applyanimatediffmodelsimple = NODE_CLASS_MAPPINGS[
-    "ADE_ApplyAnimateDiffModelSimple"
-]()
-
 ade_applyanimatediffmodelsimple_88 = ade_applyanimatediffmodelsimple.apply_motion_model(
     motion_model=get_value_at_index(ade_loadanimatediffmodel_83, 0)
 )
-
-vhs_loadvideopath = NODE_CLASS_MAPPINGS["VHS_LoadVideoPath"]()
-imagepass = NODE_CLASS_MAPPINGS["ImagePass"]()
-jwimageresizebyshorterside = NODE_CLASS_MAPPINGS["JWImageResizeByShorterSide"]()
-get_resolution_crystools = NODE_CLASS_MAPPINGS["Get resolution [Crystools]"]()
-depthanythingpreprocessor = NODE_CLASS_MAPPINGS["DepthAnythingPreprocessor"]()
-aio_preprocessor = NODE_CLASS_MAPPINGS["AIO_Preprocessor"]()
-control_net_stacker = NODE_CLASS_MAPPINGS["Control Net Stacker"]()
-efficient_loader = NODE_CLASS_MAPPINGS["Efficient Loader"]()
-
-vaeencode = VAEEncode()
+end_time = time.time()
+elapsed_time = end_time - start_time
+print(f"[Workflow] Setup Required Nodes in {elapsed_time:.2f} seconds")
 
 
-def generate_video_from_prompt(video_path: str, positive_prompt: str) -> None:
-    print(
-        f"[Debug] Starting video generation for {video_path} with prompt: {positive_prompt}"
-    )
+def load_tensor(file_path):
+    with open(file_path, "r") as f:
+        # Read the first line to get the shape
+        shape = tuple(map(int, f.readline().strip().split()))
+        numpy_data = np.loadtxt(f)
+
+    tensor = torch.tensor(numpy_data.reshape(shape))
+    return {"samples": tensor}  # Return a dictionary with "samples" key
+
+
+def generate_video_from_prompt(
+    video_path: str,
+    latent_images_path: str,
+    positive_prompt: str,
+    control_net_params: dict,
+    output_prefix: str,
+    debug: bool,
+) -> None:
+    if debug:
+        print(f"[Debug] Start generation for {video_path}, prompt: {positive_prompt}")
+        print(f"[Debug] Latent images path: {latent_images_path}")
+        print(f"[Debug] Output prefix: {output_prefix}")
+        print(f"[Debug] Control Net params: {control_net_params}")
 
     with torch.inference_mode():
-        print(f"[Debug] Loading video: {video_path}")
+        latent_images = load_tensor(latent_images_path)
+
         vhs_loadvideopath_10 = vhs_loadvideopath.load_video(
             video=video_path,
             force_rate=24,
             force_size="Disabled",
             custom_width=0,
             custom_height=0,
-            frame_load_cap=80,
-            skip_first_frames=24,
+            frame_load_cap=100,
+            skip_first_frames=0,
             select_every_nth=1,
-        )
-
-        jwimageresizebyshorterside_14 = jwimageresizebyshorterside.execute(
-            size=512,
-            interpolation_mode="nearest exact",
-            image=get_value_at_index(vhs_loadvideopath_10, 0),
-        )
-
-        imagepass_15 = imagepass.passthrough(
-            image=get_value_at_index(jwimageresizebyshorterside_14, 0)
         )
 
         purge_cache()
         purge_model()
 
         get_resolution_crystools_17 = get_resolution_crystools.execute(
-            image=get_value_at_index(imagepass_15, 0),
+            image=get_value_at_index(vhs_loadvideopath_10, 0),
             unique_id=13095250626247549117,
         )
 
-        depthanythingpreprocessor_55 = depthanythingpreprocessor.execute(
-            ckpt_name="depth_anything_vitl14.pth",
-            resolution=512,
-            image=get_value_at_index(imagepass_15, 0),
-        )
+        control_net_params = control_net_params or {}
 
-        aio_preprocessor_48 = aio_preprocessor.execute(
-            preprocessor="HEDPreprocessor",
-            resolution=512,
-            image=get_value_at_index(imagepass_15, 0),
-        )
+        def apply_control_net_stacker(
+            control_net, image, cnet_stack=None, control_net_params=None
+        ):
+            control_net_params = control_net_params or {}
+            strength = control_net_params.get("strength", 0.4)
 
+            end_percent = control_net_params.get("end_percent", 0.7)
+            return control_net_stacker.control_net_stacker(
+                strength=strength,
+                start_percent=0,
+                end_percent=end_percent,
+                control_net=control_net,
+                image=image,
+                cnet_stack=cnet_stack,
+            )
+
+        # Lineart Controlnet
         aio_preprocessor_37 = aio_preprocessor.execute(
             preprocessor="LineArtPreprocessor",
             resolution=512,
-            image=get_value_at_index(imagepass_15, 0),
+            image=get_value_at_index(vhs_loadvideopath_10, 0),
         )
-
-        control_net_stacker_44 = control_net_stacker.control_net_stacker(
-            strength=0.65,
-            start_percent=0,
-            end_percent=0.8,
+        control_net_stacker_44 = apply_control_net_stacker(
             control_net=get_value_at_index(controlnetloaderadvanced_43, 0),
             image=get_value_at_index(aio_preprocessor_37, 0),
+            control_net_params=control_net_params.get("lineart", {}),
         )
 
-        control_net_stacker_50 = control_net_stacker.control_net_stacker(
-            strength=0.65,
-            start_percent=0,
-            end_percent=0.8,
+        # Softedge Controlnet
+        aio_preprocessor_48 = aio_preprocessor.execute(
+            preprocessor="HEDPreprocessor",
+            resolution=512,
+            image=get_value_at_index(vhs_loadvideopath_10, 0),
+        )
+        control_net_stacker_50 = apply_control_net_stacker(
             control_net=get_value_at_index(controlnetloaderadvanced_49, 0),
             image=get_value_at_index(aio_preprocessor_48, 0),
             cnet_stack=get_value_at_index(control_net_stacker_44, 0),
+            control_net_params=control_net_params.get("softedge", {}),
         )
 
-        control_net_stacker_53 = control_net_stacker.control_net_stacker(
-            strength=0.65,
-            start_percent=0,
-            end_percent=0.8,
+        # Depth Controlnet
+        depthanythingpreprocessor_55 = depthanythingpreprocessor.execute(
+            ckpt_name="depth_anything_vitl14.pth",
+            resolution=512,
+            image=get_value_at_index(vhs_loadvideopath_10, 0),
+        )
+        control_net_stacker_53 = apply_control_net_stacker(
             control_net=get_value_at_index(controlnetloaderadvanced_52, 0),
             image=get_value_at_index(depthanythingpreprocessor_55, 0),
             cnet_stack=get_value_at_index(control_net_stacker_50, 0),
+            control_net_params=control_net_params.get("depth", {}),
         )
 
         efficient_loader_38 = efficient_loader.efficientloader(
@@ -314,8 +334,8 @@ def generate_video_from_prompt(video_path: str, positive_prompt: str) -> None:
             lora_name="lcm/SD1.5/pytorch_lora_weights.safetensors",
             lora_model_strength=0.5,
             lora_clip_strength=0,
-            positive=f"(realistic photo) {positive_prompt}",
-            negative="(nsfw:1.25), (nipples:1.25), (low quality, worst quality:1.2), low-resolution, lowres, jpeg artifacts, compression artifacts, poorly drawn, downsampling, aliasing, distorted, pixelated, fake, hyper, glitch, distortion, text, watermark, signature, user name, artist name, moir pattern, blurry, glossy, ugly, twisted, excessive, exaggerated pose, exaggerated limbs, grainy, duplicate, error, beginner, overexposed, high-contrast, bad-contrast, selfie, handy, phone, embedding:badhandv4, naked, nude, deformed iris, deformed pupils, semi-realistic, cgi, 3d, render, sketch, cartoon, drawing, anime, mutated hands and fingers:1.4, deformed, distorted, disfigured:1.3, bad anatomy, wrong anatomy, extra limb, missing limb, floating limbs, disconnected limbs, mutation, mutated, disgusting, amputation\n",
+            positive=f"(realistic photo, 8k uhd), {positive_prompt}",
+            negative="(nsfw:1.1), (nipples:1.1), (worst quality), (deformed iris, deformed pupils, semi-realistic, cgi, 3d, render, sketch, cartoon, drawing, anime), text, cropped, out of frame, worst quality, low quality, jpeg artifacts, ugly, duplicate, morbid, mutilated, extra fingers, mutated hands, poorly drawn hands, poorly drawn face, mutation, deformed, blurry, dehydrated, bad anatomy, bad proportions, extra limbs, cloned face, disfigured, gross proportions, malformed limbs, missing arms, missing legs, extra arms, extra legs, fused fingers, too many fingers, long neck, UnrealisticDream, orange",
             token_normalization="mean",
             weight_interpretation="A1111",
             empty_latent_width=get_value_at_index(get_resolution_crystools_17, 0),
@@ -328,11 +348,6 @@ def generate_video_from_prompt(video_path: str, positive_prompt: str) -> None:
         purge_cache()
         purge_model()
 
-        vaeencode_80 = vaeencode.encode(
-            pixels=get_value_at_index(imagepass_15, 0),
-            vae=get_value_at_index(efficient_loader_38, 4),
-        )
-
         ade_useevolvedsampling_94 = ade_useevolvedsampling.use_evolved_sampling(
             beta_schedule="lcm >> sqrt_linear",
             model=get_value_at_index(efficient_loader_38, 0),
@@ -343,7 +358,7 @@ def generate_video_from_prompt(video_path: str, positive_prompt: str) -> None:
 
         ksampler_efficient_81 = ksampler_efficient.sample(
             seed=random.randint(1, 2**64),
-            steps=5,
+            steps=6,
             cfg=1.5,
             sampler_name="lcm",
             scheduler="sgm_uniform",
@@ -353,63 +368,92 @@ def generate_video_from_prompt(video_path: str, positive_prompt: str) -> None:
             model=get_value_at_index(ade_useevolvedsampling_94, 0),
             positive=get_value_at_index(efficient_loader_38, 1),
             negative=get_value_at_index(efficient_loader_38, 2),
-            latent_image=get_value_at_index(vaeencode_80, 0),
+            latent_image=latent_images,
             optional_vae=get_value_at_index(efficient_loader_38, 4),
         )
-        # print("[Debug] KSampler (Efficient) sampling successful")
 
         vhs_videocombine_111 = vhs_videocombine.combine_video(
             frame_rate=20,
             loop_count=0,
-            filename_prefix="pexels_v2",
+            filename_prefix=output_prefix,
             format="video/h264-mp4",
             pingpong=False,
             save_output=True,
             images=get_value_at_index(ksampler_efficient_81, 5),
             unique_id=9989530071036380741,
         )
-        # print("[Debug] Video combined successfully")
 
         purge_cache()
         purge_model()
 
 
 if __name__ == "__main__":
-    # data_file_path = ("/home/ubuntu/Desktop/eugene/ComfyUI/input/hihi.txt")
-    data_file_path = ("input/pexels_v2_metadata_final.txt")
-    
-    output_dir = "/home/ubuntu/Desktop/eugene/ComfyUI/output"
-    
-    video_prompts = read_data_file(data_file_path)
+    data_file_path = "input/bs1000_b1/metadata_final.txt"
+    video_base_path = "input/bs1000_b1/videos"
+    latent_base_path = "input/bs1000_b1/latent_images"
 
+    output_dir = "output/v2v_videos"
+    output_prefix = "v2v_videos/processed"
+
+    video_prompts = read_data_file(data_file_path)
     limited_prompts = video_prompts
 
-    for index, (video_id, positive_prompt) in enumerate(limited_prompts):
-        
-        print(video_id, positive_prompt)
-        output_file = os.path.join(output_dir, f"pexels_v2_{index+1:05d}.mp4")
-        # output_file = os.path.join(output_dir, f"DEMO_{index+1:05d}.mp4")
-        # id = int(os.path.splitext(os.path.basename(video_id))[0])
+    for index, (video_name, positive_prompt, human_presence) in enumerate(
+        limited_prompts
+    ):
+        video_basename, ext = video_name.split(".")
+        video_prefix, video_id = video_basename.split("_")
+        output_file = os.path.join(
+            output_dir, f"{video_prefix}_{int(video_id):05d}.mp4"
+        )
 
         if os.path.exists(output_file):
             print(
-                f"[Workflow] Skipping already processed video (Index: {index}): {video_id}"
+                f"[Workflow] Skipping already processed video (Index: {index}): {video_name}"
             )
             continue
 
-        video_path = f"/home/ubuntu/Desktop/eugene/ComfyUI/input/pexels_2260/{video_id}"
-        
+        video_path = f"{video_base_path}/{video_name}"
+        latent_images_path = f"{latent_base_path}/latent_{video_id}.txt"
+
         print(
-            f"[Workflow] Processing video (Index: {index}): {video_id}, Description: {positive_prompt}"
+            f"[Workflow] Processing video (Index: {index}): {video_name}, Description: {positive_prompt}, Human Presence: {human_presence}"
         )
 
         start_time = time.time()
-        generate_video_from_prompt(video_path, positive_prompt)
+        if human_presence:
+            control_net_params = {
+                "lineart": {"strength": 0.22, "end_percent": 0.68},
+                "softedge": {"strength": 0.27, "end_percent": 0.78},
+                "depth": {"strength": 0.35, "end_percent": 0.88},
+            }
+            generate_video_from_prompt(
+                video_path,
+                latent_images_path,
+                positive_prompt,
+                control_net_params,
+                output_prefix,
+                True,
+            )
+        else:
+            control_net_params = {
+                "lineart": {"strength": 0.18, "end_percent": 0.65},
+                "softedge": {"strength": 0.23, "end_percent": 0.75},
+                "depth": {"strength": 0.32, "end_percent": 0.85},
+            }
+            generate_video_from_prompt(
+                video_path,
+                latent_images_path,
+                positive_prompt,
+                output_prefix,
+                True,
+            )
+
         end_time = time.time()
         elapsed_time = end_time - start_time
 
         print(
-            f"[Workflow] Finished processing video (Index: {index}): {video_id} in {elapsed_time:.2f} seconds"
+            f"[Workflow] Finished processing video (Index: {index}): {video_name} in {elapsed_time:.2f} seconds\n"
         )
 
     print("All videos processed.")
