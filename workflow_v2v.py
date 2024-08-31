@@ -175,7 +175,7 @@ ksampler_efficient = NODE_CLASS_MAPPINGS["KSampler (Efficient)"]()
 vhs_videocombine = NODE_CLASS_MAPPINGS["VHS_VideoCombine"]()
 
 # Setup Loras
-lora_stacker_40 = lora_stacker.lora_stacker(
+lora_stacker_human = lora_stacker.lora_stacker(
     input_mode="advanced",
     lora_count=2,
     lora_name_1="add_detail.safetensors",
@@ -184,6 +184,17 @@ lora_stacker_40 = lora_stacker.lora_stacker(
     lora_name_2="depth_of_field_slider_v1.safetensors",
     model_str_2=1.5,
     clip_str_2=1.5,
+)
+
+lora_stacker_nonhuman = lora_stacker.lora_stacker(
+    input_mode="advanced",
+    lora_count=2,
+    lora_name_1="add_detail.safetensors",
+    model_str_1=0.3,
+    clip_str_1=0.3,
+    lora_name_2="depth_of_field_slider_v1.safetensors",
+    model_str_2=1.2,
+    clip_str_2=1.2,
 )
 # Load controlnet models
 controlnetloaderadvanced_43 = controlnetloaderadvanced.load_controlnet(
@@ -241,6 +252,7 @@ def generate_video_from_prompt(
     positive_prompt: str,
     control_net_params: dict,
     output_prefix: str,
+    lora_stacker,
     debug: bool,
 ) -> None:
     if debug:
@@ -341,7 +353,7 @@ def generate_video_from_prompt(
             empty_latent_width=get_value_at_index(get_resolution_crystools_17, 0),
             empty_latent_height=get_value_at_index(get_resolution_crystools_17, 1),
             batch_size=1,
-            lora_stack=get_value_at_index(lora_stacker_40, 0),
+            lora_stack=get_value_at_index(lora_stacker, 0),
             cnet_stack=get_value_at_index(control_net_stacker_53, 0),
         )
 
@@ -423,9 +435,9 @@ if __name__ == "__main__":
         start_time = time.time()
         if human_presence:
             control_net_params = {
-                "lineart": {"strength": 0.22, "end_percent": 0.68},
-                "softedge": {"strength": 0.27, "end_percent": 0.78},
-                "depth": {"strength": 0.35, "end_percent": 0.88},
+                "lineart": {"strength": 0.5, "end_percent": 0.75},
+                "softedge": {"strength": 0.55, "end_percent": 0.8},
+                "depth": {"strength": 0.6, "end_percent": 0.85},
             }
             generate_video_from_prompt(
                 video_path,
@@ -433,20 +445,22 @@ if __name__ == "__main__":
                 positive_prompt,
                 control_net_params,
                 output_prefix,
-                True,
+                lora_stacker_human,
+                False,
             )
         else:
             control_net_params = {
-                "lineart": {"strength": 0.18, "end_percent": 0.65},
-                "softedge": {"strength": 0.23, "end_percent": 0.75},
-                "depth": {"strength": 0.32, "end_percent": 0.85},
+                "lineart": {"strength": 0.4, "end_percent": 0.7},
+                "softedge": {"strength": 0.4, "end_percent": 0.7},
+                "depth": {"strength": 0.45, "end_percent": 0.8},
             }
             generate_video_from_prompt(
                 video_path,
                 latent_images_path,
                 positive_prompt,
                 output_prefix,
-                True,
+                lora_stacker_nonhuman,
+                False,
             )
 
         end_time = time.time()
