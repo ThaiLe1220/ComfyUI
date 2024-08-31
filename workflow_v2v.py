@@ -444,7 +444,7 @@ if __name__ == "__main__":
                 latent_images_path,
                 positive_prompt,
                 control_net_params,
-                output_prefix,
+                video_output_prefix,
                 lora_stacker_human,
                 False,
             )
@@ -458,7 +458,7 @@ if __name__ == "__main__":
                 video_path,
                 latent_images_path,
                 positive_prompt,
-                output_prefix,
+                video_output_prefix,
                 lora_stacker_nonhuman,
                 False,
             )
