@@ -344,7 +344,7 @@ def generate_video_from_prompt(
             vae_name="vae-ft-mse-840000-ema-pruned.safetensors",
             clip_skip=-1,
             lora_name="lcm/SD1.5/pytorch_lora_weights.safetensors",
-            lora_model_strength=0.65,
+            lora_model_strength=0.6,
             lora_clip_strength=0,
             positive=f"(realistic photo, 8k uhd), {positive_prompt}",
             negative="(nsfw:1.1), (nipples:1.1), (worst quality), (deformed iris, deformed pupils, semi-realistic, cgi, 3d, render, sketch, cartoon, drawing, anime), text, cropped, out of frame, worst quality, low quality, jpeg artifacts, ugly, duplicate, morbid, mutilated, extra fingers, mutated hands, poorly drawn hands, poorly drawn face, mutation, deformed, blurry, dehydrated, bad anatomy, bad proportions, extra limbs, cloned face, disfigured, gross proportions, malformed limbs, missing arms, missing legs, extra arms, extra legs, fused fingers, too many fingers, long neck, UnrealisticDream, orange",
@@ -401,9 +401,9 @@ def generate_video_from_prompt(
 
 if __name__ == "__main__":
     batch_number = 1
-    data_file_path = f"input/bs{batch_number}000_b{batch_number}/metadata_final.txt"
-    video_base_path = f"input/bs{batch_number}000_b{batch_number}/videos"
-    latent_base_path = f"input/bs{batch_number}000_b{batch_number}/latent_images"
+    data_file_path = f"input/b1000_b{batch_number}/metadata_final.txt"
+    video_base_path = f"input/bs1000_b{batch_number}/videos"
+    latent_base_path = f"input/bs1000_b{batch_number}/latent_images"
 
     output_dir = f"output/v2v_videos_b{batch_number}"
 
@@ -436,8 +436,8 @@ if __name__ == "__main__":
         start_time = time.time()
         if human_presence:
             control_net_params = {
-                "lineart": {"strength": 0.55, "end_percent": 0.85},
-                "softedge": {"strength": 0.6, "end_percent": 0.85},
+                "lineart": {"strength": 0.55, "end_percent": 0.75},
+                "softedge": {"strength": 0.6, "end_percent": 0.8},
                 "depth": {"strength": 0.65, "end_percent": 0.85},
             }
             generate_video_from_prompt(
@@ -447,7 +447,7 @@ if __name__ == "__main__":
                 control_net_params,
                 video_output_prefix,
                 lora_stacker_human,
-                True,
+                False,
             )
         else:
             control_net_params = {
