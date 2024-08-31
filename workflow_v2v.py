@@ -3,9 +3,9 @@ import random
 import sys
 from typing import Sequence, Mapping, Any, Union
 import torch
-import itertools
-import json
 import numpy as np
+import time
+import argparse
 
 
 def get_value_at_index(obj: Union[Sequence, Mapping], index: int) -> Any:
@@ -179,22 +179,22 @@ lora_stacker_human = lora_stacker.lora_stacker(
     input_mode="advanced",
     lora_count=2,
     lora_name_1="add_detail.safetensors",
-    model_str_1=0.5,
-    clip_str_1=0.5,
+    model_str_1=0.3,
+    clip_str_1=0.3,
     lora_name_2="depth_of_field_slider_v1.safetensors",
-    model_str_2=1.5,
-    clip_str_2=1.5,
+    model_str_2=1.2,
+    clip_str_2=1.2,
 )
 
 lora_stacker_nonhuman = lora_stacker.lora_stacker(
     input_mode="advanced",
     lora_count=2,
     lora_name_1="add_detail.safetensors",
-    model_str_1=0.3,
-    clip_str_1=0.3,
+    model_str_1=0.5,
+    clip_str_1=0.5,
     lora_name_2="depth_of_field_slider_v1.safetensors",
-    model_str_2=1.2,
-    clip_str_2=1.2,
+    model_str_2=1.5,
+    clip_str_2=1.5,
 )
 # Load controlnet models
 controlnetloaderadvanced_43 = controlnetloaderadvanced.load_controlnet(
@@ -344,7 +344,7 @@ def generate_video_from_prompt(
             vae_name="vae-ft-mse-840000-ema-pruned.safetensors",
             clip_skip=-1,
             lora_name="lcm/SD1.5/pytorch_lora_weights.safetensors",
-            lora_model_strength=0.5,
+            lora_model_strength=0.65,
             lora_clip_strength=0,
             positive=f"(realistic photo, 8k uhd), {positive_prompt}",
             negative="(nsfw:1.1), (nipples:1.1), (worst quality), (deformed iris, deformed pupils, semi-realistic, cgi, 3d, render, sketch, cartoon, drawing, anime), text, cropped, out of frame, worst quality, low quality, jpeg artifacts, ugly, duplicate, morbid, mutilated, extra fingers, mutated hands, poorly drawn hands, poorly drawn face, mutation, deformed, blurry, dehydrated, bad anatomy, bad proportions, extra limbs, cloned face, disfigured, gross proportions, malformed limbs, missing arms, missing legs, extra arms, extra legs, fused fingers, too many fingers, long neck, UnrealisticDream, orange",
@@ -370,7 +370,7 @@ def generate_video_from_prompt(
 
         ksampler_efficient_81 = ksampler_efficient.sample(
             seed=random.randint(1, 2**64),
-            steps=6,
+            steps=5,
             cfg=1.5,
             sampler_name="lcm",
             scheduler="sgm_uniform",
@@ -400,11 +400,12 @@ def generate_video_from_prompt(
 
 
 if __name__ == "__main__":
-    data_file_path = "input/bs1000_b1/metadata_final.txt"
-    video_base_path = "input/bs1000_b1/videos"
-    latent_base_path = "input/bs1000_b1/latent_images"
+    batch_number = 1
+    data_file_path = f"input/bs{batch_number}000_b{batch_number}/metadata_final.txt"
+    video_base_path = f"input/bs{batch_number}000_b{batch_number}/videos"
+    latent_base_path = f"input/bs{batch_number}000_b{batch_number}/latent_images"
 
-    output_dir = "output/v2v_videos"
+    output_dir = f"output/v2v_videos_b{batch_number}"
 
     video_prompts = read_data_file(data_file_path)
     limited_prompts = video_prompts
@@ -415,7 +416,7 @@ if __name__ == "__main__":
         video_basename, ext = video_name.split(".")
         video_prefix, video_id = video_basename.split("_")
         output_file = os.path.join(
-            output_dir, f"{video_prefix}_{int(video_id):05d}.mp4"
+            output_dir, f"{video_prefix}_{int(video_id):06d}_00001.mp4"
         )
 
         if os.path.exists(output_file):
@@ -426,7 +427,7 @@ if __name__ == "__main__":
 
         video_path = f"{video_base_path}/{video_name}"
         latent_images_path = f"{latent_base_path}/latent_{video_id}.txt"
-        video_output_prefix = f"v2v_videos/processed_{video_id}"
+        video_output_prefix = f"v2v_videos_b{batch_number}/processed_{video_id}"
 
         print(
             f"[Workflow] Processing video (Index: {index}): {video_name}, Description: {positive_prompt}, Human Presence: {human_presence}"
@@ -435,9 +436,9 @@ if __name__ == "__main__":
         start_time = time.time()
         if human_presence:
             control_net_params = {
-                "lineart": {"strength": 0.5, "end_percent": 0.75},
-                "softedge": {"strength": 0.55, "end_percent": 0.8},
-                "depth": {"strength": 0.6, "end_percent": 0.85},
+                "lineart": {"strength": 0.55, "end_percent": 0.85},
+                "softedge": {"strength": 0.6, "end_percent": 0.85},
+                "depth": {"strength": 0.65, "end_percent": 0.85},
             }
             generate_video_from_prompt(
                 video_path,
@@ -446,18 +447,19 @@ if __name__ == "__main__":
                 control_net_params,
                 video_output_prefix,
                 lora_stacker_human,
-                False,
+                True,
             )
         else:
             control_net_params = {
-                "lineart": {"strength": 0.4, "end_percent": 0.7},
-                "softedge": {"strength": 0.4, "end_percent": 0.7},
-                "depth": {"strength": 0.45, "end_percent": 0.8},
+                "lineart": {"strength": 0.45, "end_percent": 0.65},
+                "softedge": {"strength": 0.5, "end_percent": 0.7},
+                "depth": {"strength": 0.55, "end_percent": 0.75},
             }
             generate_video_from_prompt(
                 video_path,
                 latent_images_path,
                 positive_prompt,
+                control_net_params,
                 video_output_prefix,
                 lora_stacker_nonhuman,
                 False,

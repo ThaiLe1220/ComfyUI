@@ -6,7 +6,7 @@ while true; do
     
     if [ $exit_code -ne 0 ]; then
         echo "workflow_v2v.py failed with exit code $exit_code. Restarting..."
-        sleep 3
+        sleep 1
     else
         echo "workflow_v2v.py completed successfully. Exiting."
         break
