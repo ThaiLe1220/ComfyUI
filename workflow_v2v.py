@@ -405,7 +405,6 @@ if __name__ == "__main__":
     latent_base_path = "input/bs1000_b1/latent_images"
 
     output_dir = "output/v2v_videos"
-    output_prefix = "v2v_videos/processed"
 
     video_prompts = read_data_file(data_file_path)
     limited_prompts = video_prompts
@@ -427,6 +426,7 @@ if __name__ == "__main__":
 
         video_path = f"{video_base_path}/{video_name}"
         latent_images_path = f"{latent_base_path}/latent_{video_id}.txt"
+        video_output_prefix = f"v2v_videos/processed_{video_id}"
 
         print(
             f"[Workflow] Processing video (Index: {index}): {video_name}, Description: {positive_prompt}, Human Presence: {human_presence}"
