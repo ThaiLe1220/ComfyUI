@@ -384,6 +384,9 @@ def generate_video_from_prompt(
             optional_vae=get_value_at_index(efficient_loader_38, 4),
         )
 
+        purge_cache()
+        purge_model()
+
         vhs_videocombine_111 = vhs_videocombine.combine_video(
             frame_rate=20,
             loop_count=0,
@@ -395,13 +398,10 @@ def generate_video_from_prompt(
             unique_id=9989530071036380741,
         )
 
-        purge_cache()
-        purge_model()
-
 
 if __name__ == "__main__":
     batch_number = 1
-    data_file_path = f"input/b1000_b{batch_number}/metadata_final.txt"
+    data_file_path = f"input/bs1000_b{batch_number}/metadata_final.txt"
     video_base_path = f"input/bs1000_b{batch_number}/videos"
     latent_base_path = f"input/bs1000_b{batch_number}/latent_images"
 
