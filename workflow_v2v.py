@@ -264,6 +264,9 @@ def generate_video_from_prompt(
     with torch.inference_mode():
         latent_images = load_tensor(latent_images_path)
 
+        purge_cache()
+        purge_model()
+
         vhs_loadvideopath_10 = vhs_loadvideopath.load_video(
             video=video_path,
             force_rate=24,
@@ -388,7 +391,7 @@ def generate_video_from_prompt(
         purge_model()
 
         vhs_videocombine_111 = vhs_videocombine.combine_video(
-            frame_rate=20,
+            frame_rate=18,
             loop_count=0,
             filename_prefix=output_prefix,
             format="video/h264-mp4",
@@ -432,6 +435,9 @@ if __name__ == "__main__":
         print(
             f"[Workflow] Processing video (Index: {index}): {video_name}, Description: {positive_prompt}, Human Presence: {human_presence}"
         )
+
+        purge_cache()
+        purge_model()
 
         start_time = time.time()
         if human_presence:
