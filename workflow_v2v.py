@@ -246,6 +246,12 @@ def load_tensor(file_path):
     return {"samples": tensor}  # Return a dictionary with "samples" key
 
 
+def load_tensor_np(file_path):
+    numpy_data = np.load(file_path)
+    tensor = torch.from_numpy(numpy_data)
+    return {"samples": tensor}
+
+
 def generate_video_from_prompt(
     video_path: str,
     latent_images_path: str,
@@ -262,7 +268,7 @@ def generate_video_from_prompt(
         print(f"[Debug] Control Net params: {control_net_params}")
 
     with torch.inference_mode():
-        latent_images = load_tensor(latent_images_path)
+        latent_images = load_tensor_np(latent_images_path)
 
         purge_cache()
         purge_model()
@@ -347,7 +353,7 @@ def generate_video_from_prompt(
             vae_name="vae-ft-mse-840000-ema-pruned.safetensors",
             clip_skip=-1,
             lora_name="lcm/SD1.5/pytorch_lora_weights.safetensors",
-            lora_model_strength=0.6,
+            lora_model_strength=0.5,
             lora_clip_strength=0,
             positive=f"(realistic photo, 8k uhd), {positive_prompt}",
             negative="(nsfw:1.1), (nipples:1.1), (worst quality), (deformed iris, deformed pupils, semi-realistic, cgi, 3d, render, sketch, cartoon, drawing, anime), text, cropped, out of frame, worst quality, low quality, jpeg artifacts, ugly, duplicate, morbid, mutilated, extra fingers, mutated hands, poorly drawn hands, poorly drawn face, mutation, deformed, blurry, dehydrated, bad anatomy, bad proportions, extra limbs, cloned face, disfigured, gross proportions, malformed limbs, missing arms, missing legs, extra arms, extra legs, fused fingers, too many fingers, long neck, UnrealisticDream, orange",
@@ -391,7 +397,7 @@ def generate_video_from_prompt(
         purge_model()
 
         vhs_videocombine_111 = vhs_videocombine.combine_video(
-            frame_rate=18,
+            frame_rate=20,
             loop_count=0,
             filename_prefix=output_prefix,
             format="video/h264-mp4",
@@ -403,8 +409,8 @@ def generate_video_from_prompt(
 
 
 if __name__ == "__main__":
-    batch_number = 1
-    data_file_path = f"input/bs1000_b{batch_number}/metadata_final.txt"
+    batch_number = 11
+    data_file_path = f"input/bs1000_b{batch_number}/metadata_final_b{batch_number}.txt"
     video_base_path = f"input/bs1000_b{batch_number}/videos"
     latent_base_path = f"input/bs1000_b{batch_number}/latent_images"
 
@@ -429,7 +435,7 @@ if __name__ == "__main__":
             continue
 
         video_path = f"{video_base_path}/{video_name}"
-        latent_images_path = f"{latent_base_path}/latent_{video_id}.txt"
+        latent_images_path = f"{latent_base_path}/latent_{video_id}.npy"
         video_output_prefix = f"v2v_videos_b{batch_number}/processed_{video_id}"
 
         print(

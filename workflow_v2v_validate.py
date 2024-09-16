@@ -9,9 +9,9 @@ def extract_id(filename):
 
 
 def categorize_files(directory):
-    small_files = []  # < 65MB
-    medium_files = []  # 65-90 MB
-    large_files = []  # > 90 MB
+    small_files = []  # < 15MB
+    medium_files = []  # 15-27 MB
+    large_files = []  # > 27 MB
 
     try:
         for filename in os.listdir(directory):
@@ -21,9 +21,9 @@ def categorize_files(directory):
                 file_id = extract_id(filename)
 
                 if file_id:
-                    if file_size < 65:
+                    if file_size < 15:
                         small_files.append(file_id)
-                    elif 65 <= file_size <= 90:
+                    elif 15 <= file_size <= 27:
                         medium_files.append(file_id)
                     else:
                         large_files.append(file_id)
@@ -58,19 +58,19 @@ def process_metadata(metadata_file, medium_ids, small_large_output, final_output
 
 
 if __name__ == "__main__":
-    input_directory = "input/bs1000_b1/latent_images"
-    metadata_file = "input/bs1000_b1/metadata_bs1000_b1.txt"
-    small_large_output = "input/bs1000_b1/metadata_bs1000_b1_mismatch.txt"
-    final_output = "input/bs1000_b1/metadata_final.txt"
+    input_directory = "input/bs1000_b11/latent_images"
+    metadata_file = "input/bs1000_b11/metadata_bs1000_b11.txt"
+    small_large_output = "input/bs1000_b11/metadata_bs1000_b11_mismatch.txt"
+    final_output = "input/bs1000_b11/metadata_final_b11.txt"
     result = categorize_files(input_directory)
 
     if result:
         small, medium, large = result
         total = len(small) + len(medium) + len(large)
         print(f"File size categories in '{input_directory}':")
-        print(f"Small files (< 65 MB): {len(small)}")
-        print(f"Medium files (65-90 MB): {len(medium)}")
-        print(f"Large files (> 90 MB): {len(large)}")
+        print(f"Small files (< 15 MB): {len(small)}")
+        print(f"Medium files (15-27 MB): {len(medium)}")
+        print(f"Large files (> 27 MB): {len(large)}")
         print(f"Total files: {total}")
 
         medium_ids = set(medium)
