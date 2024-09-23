@@ -9,21 +9,21 @@ def extract_id(filename):
 
 
 def categorize_files(directory):
-    small_files = []  # < 15MB
-    medium_files = []  # 15-27 MB
-    large_files = []  # > 27 MB
+    small_files = []
+    medium_files = []
+    large_files = []
 
     try:
         for filename in os.listdir(directory):
             filepath = os.path.join(directory, filename)
             if os.path.isfile(filepath):
-                file_size = os.path.getsize(filepath) / (1024 * 1024)  # Convert to MB
+                file_size = os.path.getsize(filepath) / (1000 * 1000)  # Convert to MB
                 file_id = extract_id(filename)
 
                 if file_id:
-                    if file_size < 15:
+                    if file_size < 6.5:
                         small_files.append(file_id)
-                    elif 15 <= file_size <= 27:
+                    elif 6.5 <= file_size <= 15:
                         medium_files.append(file_id)
                     else:
                         large_files.append(file_id)
@@ -58,10 +58,11 @@ def process_metadata(metadata_file, medium_ids, small_large_output, final_output
 
 
 if __name__ == "__main__":
-    input_directory = "input/bs1000_b11/latent_images"
-    metadata_file = "input/bs1000_b11/metadata_bs1000_b11.txt"
-    small_large_output = "input/bs1000_b11/metadata_bs1000_b11_mismatch.txt"
-    final_output = "input/bs1000_b11/metadata_final_b11.txt"
+    batch = 19
+    input_directory = f"input/bs1000_b{batch}/latent_images"
+    metadata_file = f"input/bs1000_b{batch}/metadata_bs1000_b{batch}.txt"
+    small_large_output = f"input/bs1000_b{batch}/metadata_bs1000_b{batch}_mismatch.txt"
+    final_output = f"input/bs1000_b{batch}/metadata_final_b{batch}.txt"
     result = categorize_files(input_directory)
 
     if result:

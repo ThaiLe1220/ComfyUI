@@ -1,0 +1,1863 @@
+{
+  "last_node_id": 79,
+  "last_link_id": 560,
+  "nodes": [
+    {
+      "id": 32,
+      "type": "Note",
+      "pos": [
+        -170,
+        680
+      ],
+      "size": {
+        "0": 210,
+        "1": 390
+      },
+      "flags": {},
+      "order": 0,
+      "mode": 0,
+      "title": "Notes on Image Creation",
+      "properties": {
+        "text": ""
+      },
+      "widgets_values": [
+        "Checkpoint Loader Info\n-----------------------\n\nThis has been outfitted with an internal LoRA Loader for an addition Add Detail LoRA. The possitive net gain of this is debatable but overall it provides a better quality outcome.\n\n\n+ & - Prompts\n--------------\n\nOverall the rule is keep it simple, short and to the point. This is Img2Img and IPAdapter will do most of the work on it's own. Just descride the ControlNet Image that'll usually do.\n\n\nhiresfixScale\n--------------\n\nIt is adviced to use 4x UltraSharp if you want Artistic Outcomes and 4x NMKD_Superscale-SP_178000_G for when you are going for Photographic style transfers."
+      ],
+      "color": "#432",
+      "bgcolor": "#653",
+      "shape": 4
+    },
+    {
+      "id": 29,
+      "type": "SaveImage",
+      "pos": [
+        1450,
+        570
+      ],
+      "size": {
+        "0": 500,
+        "1": 570
+      },
+      "flags": {},
+      "order": 14,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "images",
+          "type": "IMAGE",
+          "link": 305
+        }
+      ],
+      "properties": {},
+      "widgets_values": [
+        "ComfyUI"
+      ],
+      "color": "#222",
+      "bgcolor": "#000",
+      "shape": 1
+    },
+    {
+      "id": 43,
+      "type": "BNK_CLIPTextEncodeAdvanced",
+      "pos": [
+        430,
+        900
+      ],
+      "size": {
+        "0": 300,
+        "1": 170
+      },
+      "flags": {},
+      "order": 9,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "clip",
+          "type": "CLIP",
+          "link": 300
+        }
+      ],
+      "outputs": [
+        {
+          "name": "CONDITIONING",
+          "type": "CONDITIONING",
+          "links": [
+            302
+          ],
+          "shape": 3,
+          "slot_index": 0
+        }
+      ],
+      "title": "Negative Prompt",
+      "properties": {
+        "Node name for S&R": "BNK_CLIPTextEncodeAdvanced"
+      },
+      "widgets_values": [
+        "Worst Quality, Blurry, Messy, Distorted, Text, Numbers, Watermarks",
+        "none",
+        "comfy",
+        true
+      ],
+      "color": "#322",
+      "bgcolor": "#533",
+      "shape": 1
+    },
+    {
+      "id": 42,
+      "type": "BNK_CLIPTextEncodeAdvanced",
+      "pos": [
+        430,
+        680
+      ],
+      "size": {
+        "0": 300,
+        "1": 170
+      },
+      "flags": {},
+      "order": 8,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "clip",
+          "type": "CLIP",
+          "link": 299
+        }
+      ],
+      "outputs": [
+        {
+          "name": "CONDITIONING",
+          "type": "CONDITIONING",
+          "links": [
+            301
+          ],
+          "shape": 3,
+          "slot_index": 0
+        }
+      ],
+      "title": "Positive Prompt",
+      "properties": {
+        "Node name for S&R": "BNK_CLIPTextEncodeAdvanced"
+      },
+      "widgets_values": [
+        "",
+        "none",
+        "comfy",
+        true
+      ],
+      "color": "#232",
+      "bgcolor": "#353",
+      "shape": 1
+    },
+    {
+      "id": 15,
+      "type": "workflow/Checkpoint Loader (Adv.)",
+      "pos": [
+        100,
+        790
+      ],
+      "size": {
+        "0": 300,
+        "1": 130
+      },
+      "flags": {},
+      "order": 1,
+      "mode": 0,
+      "outputs": [
+        {
+          "name": "MODEL",
+          "type": "MODEL",
+          "links": [
+            525
+          ],
+          "shape": 3
+        },
+        {
+          "name": "CLIP",
+          "type": "CLIP",
+          "links": [
+            299,
+            300
+          ],
+          "shape": 3,
+          "slot_index": 1
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "workflow/Checkpoint Loader (Adv.)"
+      },
+      "widgets_values": [
+        "SDXL\\proteus_v03.safetensors",
+        "SDXL\\add-detail-xl.safetensors",
+        0,
+        1
+      ],
+      "color": "#332922",
+      "bgcolor": "#593930",
+      "shape": 1
+    },
+    {
+      "id": 9,
+      "type": "workflow/Unified ControlNet Node",
+      "pos": [
+        430.3041436401368,
+        1230.07722975769
+      ],
+      "size": {
+        "0": 400,
+        "1": 150
+      },
+      "flags": {},
+      "order": 11,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "positive",
+          "type": "CONDITIONING",
+          "link": 301
+        },
+        {
+          "name": "negative",
+          "type": "CONDITIONING",
+          "link": 302
+        },
+        {
+          "name": "image",
+          "type": "IMAGE",
+          "link": 560
+        }
+      ],
+      "outputs": [
+        {
+          "name": "positive",
+          "type": "CONDITIONING",
+          "links": [
+            279
+          ],
+          "shape": 3,
+          "slot_index": 0
+        },
+        {
+          "name": "negative",
+          "type": "CONDITIONING",
+          "links": [
+            280
+          ],
+          "shape": 3,
+          "slot_index": 1
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "workflow/Unified ControlNet Node"
+      },
+      "widgets_values": [
+        "SDXL\\t2i-adapter-lineart-sdxl-1.0.safetensors",
+        0.6,
+        0,
+        0.6
+      ],
+      "color": "#323",
+      "bgcolor": "#535",
+      "shape": 1
+    },
+    {
+      "id": 21,
+      "type": "workflow/ClipVision Image Loader",
+      "pos": [
+        100,
+        130
+      ],
+      "size": {
+        "0": 300,
+        "1": 390
+      },
+      "flags": {},
+      "order": 2,
+      "mode": 0,
+      "outputs": [
+        {
+          "name": "IMAGE",
+          "type": "IMAGE",
+          "links": [
+            526
+          ],
+          "shape": 3
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "workflow/ClipVision Image Loader"
+      },
+      "widgets_values": [
+        "example.png",
+        "image",
+        "LANCZOS",
+        "top",
+        0
+      ],
+      "color": "#222",
+      "bgcolor": "#000",
+      "shape": 1
+    },
+    {
+      "id": 44,
+      "type": "ttN hiresfixScale",
+      "pos": [
+        1090,
+        730
+      ],
+      "size": {
+        "0": 300,
+        "1": 270
+      },
+      "flags": {},
+      "order": 13,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "vae",
+          "type": "VAE",
+          "link": null
+        },
+        {
+          "name": "image",
+          "type": "IMAGE",
+          "link": 304
+        }
+      ],
+      "outputs": [
+        {
+          "name": "latent",
+          "type": "LATENT",
+          "links": null,
+          "shape": 3
+        },
+        {
+          "name": "image",
+          "type": "IMAGE",
+          "links": [
+            305
+          ],
+          "shape": 3,
+          "slot_index": 1
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "ttN hiresfixScale",
+        "ttNnodeVersion": "1.1.0"
+      },
+      "widgets_values": [
+        "4x-UltraSharp.pth",
+        true,
+        "lanczos",
+        "to longer side - maintain aspect",
+        50,
+        1024,
+        1024,
+        4096,
+        "disabled",
+        "Hide",
+        "ComfyUI",
+        true
+      ],
+      "color": "#332922",
+      "bgcolor": "#593930",
+      "shape": 1
+    },
+    {
+      "id": 52,
+      "type": "Note",
+      "pos": [
+        70,
+        -180
+      ],
+      "size": {
+        "0": 270,
+        "1": 150
+      },
+      "flags": {},
+      "order": 3,
+      "mode": 0,
+      "title": " ",
+      "properties": {
+        "text": ""
+      },
+      "widgets_values": [
+        "Created by:\n   ____                 _     _           \n  / ___|_ __ __ _ _   _| |__ | | ___  ___ \n | |  _| '__/ _` | | | | '_ \\| |/ _ \\/ __|\n | |_| | | | (_| | |_| | |_) | |  __/\\__ \\\n  \\____|_|  \\__,_|\\__, |_.__/|_|\\___||___/\n                  |___/                   \n\nMore stuff can be found on my CivitAI page:\nhttps://civitai.com/user/Graybles"
+      ],
+      "color": "#2d2d2d",
+      "bgcolor": "#191919",
+      "shape": 1
+    },
+    {
+      "id": 33,
+      "type": "Note",
+      "pos": [
+        -170,
+        1230
+      ],
+      "size": {
+        "0": 210,
+        "1": 480
+      },
+      "flags": {},
+      "order": 4,
+      "mode": 0,
+      "title": "Notes on the ControlNet",
+      "properties": {
+        "text": ""
+      },
+      "widgets_values": [
+        "\nImage Loader Info\n------------------\n\nBecause we are using the lineart ControlNet you will have to choose the link-up that'll go into the Node depending on the Image you're using.\n\n - \"side_length\" Scales the longest side of the Image up or down to 1024px to make sure the SDXL model has prime working conditions. (Feel free to change this to 512 or 768 when using an SD1.5 model)\n\n - If you use a lineart image link the Lineart Output to the Controlnet Image Node.\n   - This is equiped with an\n     Image Invert function to\n     prepare the image for the\n     IPAdapter style transfer.\n\n - If you are using any other type of image link up the Colorized Image Output to the ControlNet Image Node.\n   - This is equipped with a\n     lineart pre-processor that\n     will make sure the\n     ControlNet adapter can do\n     it's job.\n   - Ever since v1.4 this is the\n     \"TheMisto/Anyline\" Pre-\n     processor for more detail to\n     the resulting LineArt Image."
+      ],
+      "color": "#432",
+      "bgcolor": "#653",
+      "shape": 4
+    },
+    {
+      "id": 24,
+      "type": "workflow/Unified KSampler",
+      "pos": [
+        760,
+        730
+      ],
+      "size": {
+        "0": 300,
+        "1": 290
+      },
+      "flags": {},
+      "order": 12,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "model",
+          "type": "MODEL",
+          "link": 524,
+          "slot_index": 0
+        },
+        {
+          "name": "positive",
+          "type": "CONDITIONING",
+          "link": 279
+        },
+        {
+          "name": "negative",
+          "type": "CONDITIONING",
+          "link": 280
+        },
+        {
+          "name": "latent_image",
+          "type": "LATENT",
+          "link": 559
+        },
+        {
+          "name": "vae",
+          "type": "VAE",
+          "link": null
+        }
+      ],
+      "outputs": [
+        {
+          "name": "IMAGE",
+          "type": "IMAGE",
+          "links": [
+            304
+          ],
+          "shape": 3,
+          "slot_index": 0
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "workflow/Unified KSampler"
+      },
+      "widgets_values": [
+        0,
+        "randomize",
+        35,
+        6,
+        "dpmpp_2m",
+        "karras",
+        1
+      ],
+      "color": "#332922",
+      "bgcolor": "#593930",
+      "shape": 1
+    },
+    {
+      "id": 71,
+      "type": "Note",
+      "pos": [
+        800,
+        90
+      ],
+      "size": {
+        "0": 430,
+        "1": 450
+      },
+      "flags": {},
+      "order": 5,
+      "mode": 0,
+      "title": "Note on Layer Weights",
+      "properties": {
+        "text": ""
+      },
+      "widgets_values": [
+        "What are Layer Weights?\n------------------------\n\nLayer Weights in this version of IPAdapter pertain to the Crossattention that the Node can tap into.\n\nIn Stable Diffusion there are 12 different codes each selecting a different crossattention type.\n\nThese are:\n 1) General Structure\n 2) Color Scheme\n 3) Composition\n 4) Lighting and Shadow\n 5) Texture and Detail\n 6) Style\n 7) Depth and Perspective\n 8) Background and Evironment\n 9) Object Features\n10) Motion and Dynamics\n11) Emotions and Expressions\n12) Contextual Consistency\n\nThe new version of the IPAdapter Node can tap into these specific areas and enhance or decrease these features in the resulting image.\n\nExample:\n---------\nIf you want to focus on Composition and Style something you're probably gonna do a lot with this workflow you can put: 3:1.8, 6:1.4 in the layer_weights area.\n\nTo remove parts of the original color you could add: 2:-1.7\n\nThis way you can tamper with the eventual outcome. Leaving the layer_weights empty or putting everything on: *:1 will result in the standard output."
+      ],
+      "color": "#432",
+      "bgcolor": "#653",
+      "shape": 4
+    },
+    {
+      "id": 70,
+      "type": "workflow/Unified IPAdapter (Adv.)",
+      "pos": [
+        430,
+        220
+      ],
+      "size": {
+        "0": 310,
+        "1": 300
+      },
+      "flags": {},
+      "order": 10,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "model",
+          "type": "MODEL",
+          "link": 525
+        },
+        {
+          "name": "image",
+          "type": "IMAGE",
+          "link": 526
+        }
+      ],
+      "outputs": [
+        {
+          "name": "MODEL",
+          "type": "MODEL",
+          "links": [
+            524
+          ],
+          "shape": 3
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "workflow/Unified IPAdapter (Adv.)"
+      },
+      "widgets_values": [
+        "PLUS (high strength)",
+        1,
+        1,
+        "style transfer",
+        "concat",
+        0,
+        1,
+        "V only",
+        "",
+        true
+      ],
+      "color": "#233",
+      "bgcolor": "#355",
+      "shape": 1
+    },
+    {
+      "id": 31,
+      "type": "Note",
+      "pos": [
+        -170,
+        120
+      ],
+      "size": {
+        "0": 210,
+        "1": 410
+      },
+      "flags": {},
+      "order": 6,
+      "mode": 0,
+      "title": "Notes on the IPAdapter",
+      "properties": {
+        "text": ""
+      },
+      "widgets_values": [
+        "Image Loader Info\n------------------\n\nKeep the Interpolation on LANCZOS. As for the Sharpening this can be tampered with in very small amounts, usually if you get fuzzy results 0.10 will be enough to fix it.\n\n\n\nIPAdapter Info\n---------------\n\n - Preset should be at PLUS at all times.\n - Weight will harden/soften the Image in the ClipVision Image Loader so it'll be used more or less when transfering the style of that picture.\n - Weight_Type should be style transfer or strong style transfer.\n   - style transfer will just \n     transfer the style\n   - strong style transfer will\n     add more changes to your\n     ControlNet Image.\n   - style transfer precise will \n     adhere even closer to the \n     original."
+      ],
+      "color": "#432",
+      "bgcolor": "#653",
+      "shape": 4
+    },
+    {
+      "id": 79,
+      "type": "workflow/Unified Image Loader",
+      "pos": [
+        100,
+        1230
+      ],
+      "size": [
+        300,
+        480
+      ],
+      "flags": {},
+      "order": 7,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "vae",
+          "type": "VAE",
+          "link": null
+        }
+      ],
+      "outputs": [
+        {
+          "name": "LATENT",
+          "type": "LATENT",
+          "links": [
+            559
+          ],
+          "shape": 3
+        },
+        {
+          "name": "LineArt Output",
+          "type": "IMAGE",
+          "links": [
+            560
+          ],
+          "shape": 3
+        },
+        {
+          "name": "Colorized Image Output",
+          "type": "IMAGE",
+          "links": null,
+          "shape": 3
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "workflow/Unified Image Loader"
+      },
+      "widgets_values": [
+        "example.png",
+        "image",
+        1024,
+        "Longest",
+        "lanczos",
+        "disabled",
+        "disable",
+        1024
+      ],
+      "color": "#323",
+      "bgcolor": "#535",
+      "shape": 1
+    }
+  ],
+  "links": [
+    [
+      279,
+      9,
+      0,
+      24,
+      1,
+      "CONDITIONING"
+    ],
+    [
+      280,
+      9,
+      1,
+      24,
+      2,
+      "CONDITIONING"
+    ],
+    [
+      294,
+      15,
+      2,
+      25,
+      1,
+      "VAE"
+    ],
+    [
+      295,
+      15,
+      2,
+      41,
+      "1",
+      "VAE"
+    ],
+    [
+      296,
+      15,
+      2,
+      39,
+      "1",
+      "VAE"
+    ],
+    [
+      297,
+      15,
+      2,
+      34,
+      "1",
+      "VAE"
+    ],
+    [
+      299,
+      15,
+      1,
+      42,
+      0,
+      "CLIP"
+    ],
+    [
+      300,
+      15,
+      1,
+      43,
+      0,
+      "CLIP"
+    ],
+    [
+      301,
+      42,
+      0,
+      9,
+      0,
+      "CONDITIONING"
+    ],
+    [
+      302,
+      43,
+      0,
+      9,
+      1,
+      "CONDITIONING"
+    ],
+    [
+      304,
+      24,
+      0,
+      44,
+      1,
+      "IMAGE"
+    ],
+    [
+      305,
+      44,
+      1,
+      29,
+      0,
+      "IMAGE"
+    ],
+    [
+      524,
+      70,
+      0,
+      24,
+      0,
+      "MODEL"
+    ],
+    [
+      525,
+      15,
+      0,
+      70,
+      0,
+      "MODEL"
+    ],
+    [
+      526,
+      21,
+      0,
+      70,
+      1,
+      "IMAGE"
+    ],
+    [
+      559,
+      79,
+      0,
+      24,
+      3,
+      "LATENT"
+    ],
+    [
+      560,
+      79,
+      1,
+      9,
+      2,
+      "IMAGE"
+    ]
+  ],
+  "groups": [
+    {
+      "title": "IPAdapter",
+      "bounding": [
+        71,
+        31,
+        698,
+        518
+      ],
+      "color": "#8AA",
+      "font_size": 24,
+      "locked": true
+    },
+    {
+      "title": "ControlNet",
+      "bounding": [
+        71,
+        1131,
+        788,
+        608
+      ],
+      "color": "#a1309b",
+      "font_size": 24,
+      "locked": true
+    },
+    {
+      "title": "Image Generation",
+      "bounding": [
+        71,
+        581,
+        1348,
+        518
+      ],
+      "color": "#b06634",
+      "font_size": 24,
+      "locked": true
+    }
+  ],
+  "config": {},
+  "extra": {
+    "groupNodes": {
+      "Unified Image Loader": {
+        "nodes": [
+          {
+            "type": "LoadImage",
+            "pos": [
+              940,
+              1230
+            ],
+            "size": {
+              "0": 320,
+              "1": 310
+            },
+            "flags": {},
+            "order": 7,
+            "mode": 0,
+            "outputs": [
+              {
+                "name": "IMAGE",
+                "type": "IMAGE",
+                "links": [],
+                "shape": 3,
+                "slot_index": 0
+              },
+              {
+                "name": "MASK",
+                "type": "MASK",
+                "links": null,
+                "shape": 3
+              }
+            ],
+            "properties": {
+              "Node name for S&R": "LoadImage"
+            },
+            "widgets_values": [
+              "example.png",
+              "image"
+            ],
+            "index": 0
+          },
+          {
+            "type": "DF_Image_scale_to_side",
+            "pos": [
+              940,
+              1580
+            ],
+            "size": {
+              "0": 320,
+              "1": 130
+            },
+            "flags": {},
+            "order": 11,
+            "mode": 0,
+            "inputs": [
+              {
+                "name": "image",
+                "type": "IMAGE",
+                "link": null
+              }
+            ],
+            "outputs": [
+              {
+                "name": "IMAGE",
+                "type": "IMAGE",
+                "links": [],
+                "shape": 3,
+                "slot_index": 0
+              }
+            ],
+            "properties": {
+              "Node name for S&R": "DF_Image_scale_to_side"
+            },
+            "widgets_values": [
+              1024,
+              "Longest",
+              "lanczos",
+              "disabled"
+            ],
+            "index": 1
+          },
+          {
+            "type": "VAEEncode",
+            "pos": [
+              1270,
+              1230
+            ],
+            "size": {
+              "0": 210,
+              "1": 50
+            },
+            "flags": {},
+            "order": 12,
+            "mode": 0,
+            "inputs": [
+              {
+                "name": "pixels",
+                "type": "IMAGE",
+                "link": null
+              },
+              {
+                "name": "vae",
+                "type": "VAE",
+                "link": null
+              }
+            ],
+            "outputs": [
+              {
+                "name": "LATENT",
+                "type": "LATENT",
+                "links": [],
+                "shape": 3
+              }
+            ],
+            "properties": {
+              "Node name for S&R": "VAEEncode"
+            },
+            "index": 2
+          },
+          {
+            "type": "ImageInvert",
+            "pos": [
+              1270,
+              1320
+            ],
+            "size": {
+              "0": 210,
+              "1": 30
+            },
+            "flags": {},
+            "order": 13,
+            "mode": 0,
+            "inputs": [
+              {
+                "name": "image",
+                "type": "IMAGE",
+                "link": null,
+                "slot_index": 0
+              }
+            ],
+            "outputs": [
+              {
+                "name": "IMAGE",
+                "type": "IMAGE",
+                "links": [],
+                "shape": 3
+              }
+            ],
+            "title": "LineArt Invert",
+            "properties": {
+              "Node name for S&R": "ImageInvert"
+            },
+            "index": 3
+          },
+          {
+            "type": "LineArtPreprocessor",
+            "pos": [
+              1270,
+              1390
+            ],
+            "size": {
+              "0": 320,
+              "1": 80
+            },
+            "flags": {},
+            "order": 14,
+            "mode": 0,
+            "inputs": [
+              {
+                "name": "image",
+                "type": "IMAGE",
+                "link": null
+              }
+            ],
+            "outputs": [
+              {
+                "name": "IMAGE",
+                "type": "IMAGE",
+                "links": null,
+                "shape": 3
+              }
+            ],
+            "properties": {
+              "Node name for S&R": "LineArtPreprocessor"
+            },
+            "widgets_values": [
+              "disable",
+              1024
+            ],
+            "index": 4
+          }
+        ],
+        "links": [
+          [
+            0,
+            0,
+            1,
+            0,
+            73,
+            "IMAGE"
+          ],
+          [
+            1,
+            0,
+            2,
+            0,
+            74,
+            "IMAGE"
+          ],
+          [
+            1,
+            0,
+            3,
+            0,
+            74,
+            "IMAGE"
+          ],
+          [
+            1,
+            0,
+            4,
+            0,
+            74,
+            "IMAGE"
+          ]
+        ],
+        "external": [
+          [
+            2,
+            0,
+            "LATENT"
+          ],
+          [
+            3,
+            0,
+            "IMAGE"
+          ]
+        ],
+        "config": {
+          "0": {
+            "output": {
+              "1": {
+                "visible": false
+              }
+            }
+          },
+          "3": {
+            "output": {
+              "0": {
+                "name": "LineArt Output"
+              }
+            }
+          },
+          "4": {
+            "output": {
+              "0": {
+                "name": "Colorized Image Output"
+              }
+            }
+          }
+        }
+      },
+      "Unified ControlNet Node": {
+        "nodes": [
+          {
+            "type": "ControlNetLoader",
+            "pos": [
+              1080,
+              770
+            ],
+            "size": {
+              "0": 315,
+              "1": 58
+            },
+            "flags": {},
+            "order": 2,
+            "mode": 0,
+            "outputs": [
+              {
+                "name": "CONTROL_NET",
+                "type": "CONTROL_NET",
+                "links": [],
+                "shape": 3,
+                "slot_index": 0
+              }
+            ],
+            "properties": {
+              "Node name for S&R": "ControlNetLoader"
+            },
+            "widgets_values": [
+              "t2i-adapter-lineart-sdxl-1.0.safetensors"
+            ],
+            "index": 0
+          },
+          {
+            "type": "ControlNetApplyAdvanced",
+            "pos": [
+              1060,
+              510
+            ],
+            "size": {
+              "0": 315,
+              "1": 166
+            },
+            "flags": {},
+            "order": 4,
+            "mode": 0,
+            "inputs": [
+              {
+                "name": "positive",
+                "type": "CONDITIONING",
+                "link": null
+              },
+              {
+                "name": "negative",
+                "type": "CONDITIONING",
+                "link": null
+              },
+              {
+                "name": "control_net",
+                "type": "CONTROL_NET",
+                "link": null,
+                "slot_index": 2
+              },
+              {
+                "name": "image",
+                "type": "IMAGE",
+                "link": null
+              }
+            ],
+            "outputs": [
+              {
+                "name": "positive",
+                "type": "CONDITIONING",
+                "links": null,
+                "shape": 3
+              },
+              {
+                "name": "negative",
+                "type": "CONDITIONING",
+                "links": null,
+                "shape": 3
+              }
+            ],
+            "properties": {
+              "Node name for S&R": "ControlNetApplyAdvanced"
+            },
+            "widgets_values": [
+              1,
+              0,
+              1
+            ],
+            "index": 1
+          }
+        ],
+        "links": [
+          [
+            0,
+            0,
+            1,
+            2,
+            8,
+            "CONTROL_NET"
+          ]
+        ],
+        "external": [],
+        "config": {
+          "1": {
+            "input": {
+              "start_percent": {
+                "visible": false
+              }
+            }
+          }
+        }
+      },
+      "Checkpoint Loader (Adv.)": {
+        "nodes": [
+          {
+            "type": "CheckpointLoaderSimple",
+            "pos": [
+              -110,
+              10
+            ],
+            "size": {
+              "0": 315,
+              "1": 98
+            },
+            "flags": {},
+            "order": 2,
+            "mode": 0,
+            "outputs": [
+              {
+                "name": "MODEL",
+                "type": "MODEL",
+                "links": [],
+                "shape": 3,
+                "slot_index": 0
+              },
+              {
+                "name": "CLIP",
+                "type": "CLIP",
+                "links": [],
+                "shape": 3,
+                "slot_index": 1
+              },
+              {
+                "name": "VAE",
+                "type": "VAE",
+                "links": [],
+                "shape": 3
+              }
+            ],
+            "properties": {
+              "Node name for S&R": "CheckpointLoaderSimple"
+            },
+            "widgets_values": [
+              "proteus_v03.safetensors"
+            ],
+            "index": 0
+          },
+          {
+            "type": "LoraLoader",
+            "pos": [
+              180,
+              170
+            ],
+            "size": {
+              "0": 315,
+              "1": 126
+            },
+            "flags": {},
+            "order": 4,
+            "mode": 0,
+            "inputs": [
+              {
+                "name": "model",
+                "type": "MODEL",
+                "link": null
+              },
+              {
+                "name": "clip",
+                "type": "CLIP",
+                "link": null
+              }
+            ],
+            "outputs": [
+              {
+                "name": "MODEL",
+                "type": "MODEL",
+                "links": null,
+                "shape": 3
+              },
+              {
+                "name": "CLIP",
+                "type": "CLIP",
+                "links": [],
+                "shape": 3,
+                "slot_index": 1
+              }
+            ],
+            "properties": {
+              "Node name for S&R": "LoraLoader"
+            },
+            "widgets_values": [
+              "add-detail-xl.safetensors",
+              1,
+              1
+            ],
+            "index": 1
+          },
+          {
+            "type": "Anything Everywhere",
+            "pos": [
+              -60,
+              280
+            ],
+            "size": {
+              "0": 210,
+              "1": 26
+            },
+            "flags": {},
+            "order": 5,
+            "mode": 0,
+            "inputs": [
+              {
+                "name": "anything",
+                "type": "*",
+                "link": null,
+                "slot_index": 0
+              }
+            ],
+            "properties": {
+              "Node name for S&R": "Anything Everywhere",
+              "group_restricted": 0,
+              "color_restricted": 0
+            },
+            "widgets_values": [],
+            "index": 2
+          }
+        ],
+        "links": [
+          [
+            0,
+            0,
+            1,
+            0,
+            1,
+            "MODEL"
+          ],
+          [
+            0,
+            1,
+            1,
+            1,
+            1,
+            "CLIP"
+          ],
+          [
+            0,
+            2,
+            2,
+            0,
+            1,
+            "VAE"
+          ]
+        ],
+        "external": [
+          [
+            1,
+            1,
+            "CLIP"
+          ]
+        ],
+        "config": {
+          "0": {
+            "input": {
+              "ckpt_name": {
+                "name": "CKPT Name"
+              }
+            },
+            "output": {
+              "0": {
+                "name": ""
+              },
+              "1": {
+                "name": ""
+              }
+            }
+          },
+          "1": {
+            "input": {
+              "strength_clip": {
+                "visible": false
+              },
+              "strength_model": {
+                "name": "LoRA Strength"
+              },
+              "lora_name": {
+                "name": "LoRA Name"
+              }
+            },
+            "output": {
+              "0": {
+                "name": ""
+              },
+              "1": {
+                "name": ""
+              }
+            }
+          }
+        }
+      },
+      "ClipVision Image Loader": {
+        "nodes": [
+          {
+            "type": "LoadImage",
+            "pos": [
+              550,
+              -1140
+            ],
+            "size": {
+              "0": 320,
+              "1": 310
+            },
+            "flags": {},
+            "order": 2,
+            "mode": 0,
+            "outputs": [
+              {
+                "name": "IMAGE",
+                "type": "IMAGE",
+                "links": [],
+                "shape": 3
+              },
+              {
+                "name": "MASK",
+                "type": "MASK",
+                "links": null,
+                "shape": 3
+              }
+            ],
+            "properties": {
+              "Node name for S&R": "LoadImage"
+            },
+            "widgets_values": [
+              "example.png",
+              "image"
+            ],
+            "index": 0
+          },
+          {
+            "type": "PrepImageForClipVision",
+            "pos": [
+              1010,
+              -1070
+            ],
+            "size": {
+              "0": 315,
+              "1": 106
+            },
+            "flags": {},
+            "order": 6,
+            "mode": 0,
+            "inputs": [
+              {
+                "name": "image",
+                "type": "IMAGE",
+                "link": null,
+                "slot_index": 0
+              }
+            ],
+            "outputs": [
+              {
+                "name": "IMAGE",
+                "type": "IMAGE",
+                "links": null,
+                "shape": 3
+              }
+            ],
+            "properties": {
+              "Node name for S&R": "PrepImageForClipVision"
+            },
+            "widgets_values": [
+              "LANCZOS",
+              "top",
+              0
+            ],
+            "index": 1
+          }
+        ],
+        "links": [
+          [
+            0,
+            0,
+            1,
+            0,
+            19,
+            "IMAGE"
+          ]
+        ],
+        "external": [],
+        "config": {
+          "0": {
+            "output": {
+              "1": {
+                "visible": false
+              }
+            }
+          },
+          "1": {
+            "input": {
+              "crop_position": {
+                "visible": false
+              }
+            }
+          }
+        }
+      },
+      "Unified KSampler": {
+        "nodes": [
+          {
+            "type": "KSampler",
+            "pos": [
+              1570,
+              -130
+            ],
+            "size": {
+              "0": 315,
+              "1": 262
+            },
+            "flags": {},
+            "order": 8,
+            "mode": 0,
+            "inputs": [
+              {
+                "name": "model",
+                "type": "MODEL",
+                "link": null
+              },
+              {
+                "name": "positive",
+                "type": "CONDITIONING",
+                "link": null
+              },
+              {
+                "name": "negative",
+                "type": "CONDITIONING",
+                "link": null
+              },
+              {
+                "name": "latent_image",
+                "type": "LATENT",
+                "link": null
+              }
+            ],
+            "outputs": [
+              {
+                "name": "LATENT",
+                "type": "LATENT",
+                "links": [],
+                "shape": 3,
+                "slot_index": 0
+              }
+            ],
+            "properties": {
+              "Node name for S&R": "KSampler"
+            },
+            "widgets_values": [
+              0,
+              "randomize",
+              35,
+              6,
+              "dpmpp_2m",
+              "normal",
+              1
+            ],
+            "index": 0
+          },
+          {
+            "type": "VAEDecode",
+            "pos": [
+              2000,
+              -120
+            ],
+            "size": {
+              "0": 210,
+              "1": 46
+            },
+            "flags": {},
+            "order": 9,
+            "mode": 0,
+            "inputs": [
+              {
+                "name": "samples",
+                "type": "LATENT",
+                "link": null
+              },
+              {
+                "name": "vae",
+                "type": "VAE",
+                "link": null
+              }
+            ],
+            "outputs": [
+              {
+                "name": "IMAGE",
+                "type": "IMAGE",
+                "links": null,
+                "shape": 3
+              }
+            ],
+            "properties": {
+              "Node name for S&R": "VAEDecode"
+            },
+            "index": 1
+          }
+        ],
+        "links": [
+          [
+            null,
+            0,
+            0,
+            0,
+            18,
+            "MODEL"
+          ],
+          [
+            null,
+            0,
+            0,
+            1,
+            9,
+            "CONDITIONING"
+          ],
+          [
+            null,
+            1,
+            0,
+            2,
+            9,
+            "CONDITIONING"
+          ],
+          [
+            null,
+            0,
+            0,
+            3,
+            16,
+            "LATENT"
+          ],
+          [
+            0,
+            0,
+            1,
+            0,
+            22,
+            "LATENT"
+          ]
+        ],
+        "external": [],
+        "config": {
+          "1": {
+            "input": {
+              "vae": {
+                "visible": true
+              }
+            }
+          }
+        }
+      },
+      "Unified IPAdapter (Adv.)": {
+        "nodes": [
+          {
+            "type": "IPAdapterUnifiedLoader",
+            "pos": [
+              430,
+              130
+            ],
+            "size": {
+              "0": 320,
+              "1": 80
+            },
+            "flags": {},
+            "order": 7,
+            "mode": 0,
+            "inputs": [
+              {
+                "name": "model",
+                "type": "MODEL",
+                "link": null,
+                "slot_index": 0
+              },
+              {
+                "name": "ipadapter",
+                "type": "IPADAPTER",
+                "link": null
+              }
+            ],
+            "outputs": [
+              {
+                "name": "model",
+                "type": "MODEL",
+                "links": [],
+                "shape": 3,
+                "slot_index": 0
+              },
+              {
+                "name": "ipadapter",
+                "type": "IPADAPTER",
+                "links": [],
+                "shape": 3,
+                "slot_index": 1
+              }
+            ],
+            "properties": {
+              "Node name for S&R": "IPAdapterUnifiedLoader"
+            },
+            "widgets_values": [
+              "PLUS (high strength)"
+            ],
+            "index": 0
+          },
+          {
+            "type": "IPAdapterMS",
+            "pos": [
+              760,
+              130
+            ],
+            "size": {
+              "0": 400,
+              "1": 364
+            },
+            "flags": {},
+            "order": 10,
+            "mode": 0,
+            "inputs": [
+              {
+                "name": "model",
+                "type": "MODEL",
+                "link": null
+              },
+              {
+                "name": "ipadapter",
+                "type": "IPADAPTER",
+                "link": null
+              },
+              {
+                "name": "image",
+                "type": "IMAGE",
+                "link": null
+              },
+              {
+                "name": "image_negative",
+                "type": "IMAGE",
+                "link": null
+              },
+              {
+                "name": "attn_mask",
+                "type": "MASK",
+                "link": null
+              },
+              {
+                "name": "clip_vision",
+                "type": "CLIP_VISION",
+                "link": null
+              },
+              {
+                "name": "insightface",
+                "type": "INSIGHTFACE",
+                "link": null
+              }
+            ],
+            "outputs": [
+              {
+                "name": "MODEL",
+                "type": "MODEL",
+                "links": [],
+                "shape": 3
+              }
+            ],
+            "properties": {
+              "Node name for S&R": "IPAdapterMS"
+            },
+            "widgets_values": [
+              1,
+              1,
+              "linear",
+              "concat",
+              0,
+              1,
+              "V only",
+              ""
+            ],
+            "index": 1
+          }
+        ],
+        "links": [
+          [
+            null,
+            0,
+            0,
+            0,
+            15,
+            "MODEL"
+          ],
+          [
+            0,
+            0,
+            1,
+            0,
+            67,
+            "MODEL"
+          ],
+          [
+            0,
+            1,
+            1,
+            1,
+            67,
+            "IPADAPTER"
+          ],
+          [
+            null,
+            0,
+            1,
+            2,
+            21,
+            "IMAGE"
+          ]
+        ],
+        "external": [
+          [
+            1,
+            0,
+            "MODEL"
+          ]
+        ],
+        "config": {
+          "0": {
+            "input": {
+              "ipadapter": {
+                "visible": false
+              }
+            }
+          },
+          "1": {
+            "input": {
+              "image_negative": {
+                "visible": false
+              },
+              "attn_mask": {
+                "visible": false
+              },
+              "clip_vision": {
+                "visible": false
+              },
+              "insightface": {
+                "visible": false
+              }
+            }
+          }
+        }
+      }
+    },
+    "ds": {
+      "scale": 0.5730855330116853,
+      "offset": {
+        "0": 740.4849115221693,
+        "1": 20.026813535831018
+      }
+    }
+  },
+  "version": 0.4
+}
