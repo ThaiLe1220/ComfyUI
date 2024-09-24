@@ -353,8 +353,12 @@ def generate_video_from_prompt(
             negative="(nsfw:1.1), (nipples:1.1), (worst quality), (deformed iris, deformed pupils, semi-realistic, cgi, 3d, render, sketch, cartoon, drawing, anime), text, cropped, out of frame, worst quality, low quality, jpeg artifacts, ugly, duplicate, morbid, mutilated, extra fingers, mutated hands, poorly drawn hands, poorly drawn face, mutation, deformed, blurry, dehydrated, bad anatomy, bad proportions, extra limbs, cloned face, disfigured, gross proportions, malformed limbs, missing arms, missing legs, extra arms, extra legs, fused fingers, too many fingers, long neck, UnrealisticDream, orange",
             token_normalization="mean",
             weight_interpretation="A1111",
-            empty_latent_width=get_value_at_index(vhs_loadvideopath_10, 3)['loaded_width'],
-            empty_latent_height=get_value_at_index(vhs_loadvideopath_10, 3)['loaded_height'],
+            empty_latent_width=get_value_at_index(vhs_loadvideopath_10, 3)[
+                "loaded_width"
+            ],
+            empty_latent_height=get_value_at_index(vhs_loadvideopath_10, 3)[
+                "loaded_height"
+            ],
             batch_size=1,
             lora_stack=get_value_at_index(lora_stacker, 0),
             cnet_stack=get_value_at_index(control_net_stacker_53, 0),
@@ -415,7 +419,6 @@ if __name__ == "__main__":
 
     purge_cache()
     purge_model()
-
 
     for index, (video_name, positive_prompt, human_presence) in enumerate(
         limited_prompts
