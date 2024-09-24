@@ -9,8 +9,8 @@ def extract_id(filename):
 
 
 def categorize_files(directory):
-    small_files = []  # < 15MB
-    medium_files = []  # 15-27 MB
+    small_files = []  # < 1MB
+    medium_files = []  # 1-27 MB
     large_files = []  # > 27 MB
 
     try:
@@ -21,9 +21,9 @@ def categorize_files(directory):
                 file_id = extract_id(filename)
 
                 if file_id:
-                    if file_size < 15:
+                    if file_size < 1:
                         small_files.append(file_id)
-                    elif 15 <= file_size <= 27:
+                    elif 1 <= file_size <= 27:
                         medium_files.append(file_id)
                     else:
                         large_files.append(file_id)
@@ -58,18 +58,19 @@ def process_metadata(metadata_file, medium_ids, small_large_output, final_output
 
 
 if __name__ == "__main__":
-    input_directory = "input/bs1000_b11/latent_images"
-    metadata_file = "input/bs1000_b11/metadata_bs1000_b11.txt"
-    small_large_output = "input/bs1000_b11/metadata_bs1000_b11_mismatch.txt"
-    final_output = "input/bs1000_b11/metadata_final_b11.txt"
+    batch = 21
+    input_directory = f"input/bs1000_b{batch}/latent_images"
+    metadata_file = f"input/bs1000_b{batch}/metadata_bs1000_b{batch}.txt"
+    small_large_output = f"input/bs1000_b{batch}/metadata_bs1000_b{batch}_mismatch.txt"
+    final_output = f"input/bs1000_b{batch}/metadata_final_b{batch}.txt"
     result = categorize_files(input_directory)
 
     if result:
         small, medium, large = result
         total = len(small) + len(medium) + len(large)
         print(f"File size categories in '{input_directory}':")
-        print(f"Small files (< 15 MB): {len(small)}")
-        print(f"Medium files (15-27 MB): {len(medium)}")
+        print(f"Small files (< 1 MB): {len(small)}")
+        print(f"Medium files (1-27 MB): {len(medium)}")
         print(f"Large files (> 27 MB): {len(large)}")
         print(f"Total files: {total}")
 

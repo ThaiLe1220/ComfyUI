@@ -169,11 +169,14 @@ def copy_files(text_file, source, destination):
 
 
 # Define the directories
-destination_dir = "/home/ubuntu/Desktop/eugene/ComfyUI/output/large_videos"
+# destination_dir = "/home/ubuntu/Desktop/eugene/ComfyUI/output/large_videos"
+destination_dir = (
+    "/media/thai/7d5658ea-24a2-44d4-9cb3-f919f8c14ea6/ComfyUI/output/demo_wallpaper"
+)
 os.makedirs(destination_dir, exist_ok=True)
 
-# Step 1: Copy video files from the text file
-copy_status = copy_files("_larger_video_files.txt", directories[0], destination_dir)
+# # Step 1: Copy video files from the text file
+# copy_status = copy_files("_larger_video_files.txt", directories[0], destination_dir)
 
 import os
 from concurrent.futures import ThreadPoolExecutor
@@ -199,7 +202,7 @@ if os.path.exists(destination_dir):
         # Load the video file
         with VideoFileClip(video_path) as video:
             # Set the target bitrate
-            video.write_videofile(output_path, bitrate="5000k")
+            video.write_videofile(output_path, bitrate="8000k")
 
     # Function to replace original files with reduced bitrate versions
     def replace_original_files():

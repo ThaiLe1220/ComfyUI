@@ -409,7 +409,7 @@ def generate_video_from_prompt(
 
 
 if __name__ == "__main__":
-    batch_number = 11
+    batch_number = 21
     data_file_path = f"input/bs1000_b{batch_number}/metadata_final_b{batch_number}.txt"
     video_base_path = f"input/bs1000_b{batch_number}/videos"
     latent_base_path = f"input/bs1000_b{batch_number}/latent_images"
