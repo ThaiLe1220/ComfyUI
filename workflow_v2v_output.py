@@ -98,13 +98,13 @@ def compare_and_update_metadata(metadata_file, videos):
 
 # Main execution
 directories = [
-    "/media/thai/7d5658ea-24a2-44d4-9cb3-f919f8c14ea6/ComfyUI/output/_complete",
+    "output/processed_videos_7434",
 ]
 
-metadata_file = "/media/thai/7d5658ea-24a2-44d4-9cb3-f919f8c14ea6/ComfyUI/output/processed_file_7523.txt"
+metadata_file = "output/processed_file_7438.txt"
 
-# videos = analyze_directories(directories)
-# compare_and_update_metadata(metadata_file, videos)
+videos = analyze_directories(directories)
+compare_and_update_metadata(metadata_file, videos)
 
 
 """reduce video size if exceeding 4mb"""

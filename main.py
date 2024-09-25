@@ -8,7 +8,6 @@ import time
 from comfy.cli_args import args
 from app.logger import setup_logger
 
-
 setup_logger(verbose=args.verbose)
 
 
@@ -178,6 +177,26 @@ def cleanup_temp():
     temp_dir = folder_paths.get_temp_directory()
     if os.path.exists(temp_dir):
         shutil.rmtree(temp_dir, ignore_errors=True)
+
+def load_extra_path_config(yaml_path):
+    with open(yaml_path, 'r') as stream:
+        config = yaml.safe_load(stream)
+    for c in config:
+        conf = config[c]
+        if conf is None:
+            continue
+        base_path = None
+        if "base_path" in conf:
+            base_path = conf.pop("base_path")
+        for x in conf:
+            for y in conf[x].split("\n"):
+                if len(y) == 0:
+                    continue
+                full_path = y
+                if base_path is not None:
+                    full_path = os.path.join(base_path, full_path)
+                logging.info("Adding extra search path {} {}".format(x, full_path))
+                folder_paths.add_model_folder_path(x, full_path)
 
 
 if __name__ == "__main__":
