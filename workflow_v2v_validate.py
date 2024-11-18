@@ -9,21 +9,21 @@ def extract_id(filename):
 
 
 def categorize_files(directory):
-    small_files = []  # < 1MB
-    medium_files = []  # 1-27 MB
-    large_files = []  # > 27 MB
+    small_files = []
+    medium_files = []
+    large_files = []
 
     try:
         for filename in os.listdir(directory):
             filepath = os.path.join(directory, filename)
             if os.path.isfile(filepath):
-                file_size = os.path.getsize(filepath) / (1024 * 1024)  # Convert to MB
+                file_size = os.path.getsize(filepath) / (1000 * 1000)  # Convert to MB
                 file_id = extract_id(filename)
 
                 if file_id:
-                    if file_size < 1:
+                    if file_size < 6.5:
                         small_files.append(file_id)
-                    elif 1 <= file_size <= 27:
+                    elif 6.5 <= file_size <= 15:
                         medium_files.append(file_id)
                     else:
                         large_files.append(file_id)
@@ -58,7 +58,7 @@ def process_metadata(metadata_file, medium_ids, small_large_output, final_output
 
 
 if __name__ == "__main__":
-    batch = 21
+    batch = 19
     input_directory = f"input/bs1000_b{batch}/latent_images"
     metadata_file = f"input/bs1000_b{batch}/metadata_bs1000_b{batch}.txt"
     small_large_output = f"input/bs1000_b{batch}/metadata_bs1000_b{batch}_mismatch.txt"

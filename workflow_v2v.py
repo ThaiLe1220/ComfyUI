@@ -153,7 +153,6 @@ print(f"[Workflow] Import Custome Node in {elapsed_time:.2f} seconds")
 
 start_time = time.time()
 vhs_loadvideopath = NODE_CLASS_MAPPINGS["VHS_LoadVideoPath"]()
-get_resolution_crystools = NODE_CLASS_MAPPINGS["Get resolution [Crystools]"]()
 aio_preprocessor = NODE_CLASS_MAPPINGS["AIO_Preprocessor"]()
 depthanythingpreprocessor = NODE_CLASS_MAPPINGS["DepthAnythingPreprocessor"]()
 controlnetloaderadvanced = NODE_CLASS_MAPPINGS["ControlNetLoaderAdvanced"]()
@@ -270,8 +269,8 @@ def generate_video_from_prompt(
     with torch.inference_mode():
         latent_images = load_tensor_np(latent_images_path)
 
-        purge_cache()
-        purge_model()
+        # purge_cache()
+        # purge_model()
 
         vhs_loadvideopath_10 = vhs_loadvideopath.load_video(
             video=video_path,
@@ -284,13 +283,8 @@ def generate_video_from_prompt(
             select_every_nth=1,
         )
 
-        purge_cache()
-        purge_model()
-
-        get_resolution_crystools_17 = get_resolution_crystools.execute(
-            image=get_value_at_index(vhs_loadvideopath_10, 0),
-            unique_id=13095250626247549117,
-        )
+        # purge_cache()
+        # purge_model()
 
         control_net_params = control_net_params or {}
 
@@ -359,15 +353,19 @@ def generate_video_from_prompt(
             negative="(nsfw:1.1), (nipples:1.1), (worst quality), (deformed iris, deformed pupils, semi-realistic, cgi, 3d, render, sketch, cartoon, drawing, anime), text, cropped, out of frame, worst quality, low quality, jpeg artifacts, ugly, duplicate, morbid, mutilated, extra fingers, mutated hands, poorly drawn hands, poorly drawn face, mutation, deformed, blurry, dehydrated, bad anatomy, bad proportions, extra limbs, cloned face, disfigured, gross proportions, malformed limbs, missing arms, missing legs, extra arms, extra legs, fused fingers, too many fingers, long neck, UnrealisticDream, orange",
             token_normalization="mean",
             weight_interpretation="A1111",
-            empty_latent_width=get_value_at_index(get_resolution_crystools_17, 0),
-            empty_latent_height=get_value_at_index(get_resolution_crystools_17, 1),
+            empty_latent_width=get_value_at_index(vhs_loadvideopath_10, 3)[
+                "loaded_width"
+            ],
+            empty_latent_height=get_value_at_index(vhs_loadvideopath_10, 3)[
+                "loaded_height"
+            ],
             batch_size=1,
             lora_stack=get_value_at_index(lora_stacker, 0),
             cnet_stack=get_value_at_index(control_net_stacker_53, 0),
         )
 
-        purge_cache()
-        purge_model()
+        # purge_cache()
+        # purge_model()
 
         ade_useevolvedsampling_94 = ade_useevolvedsampling.use_evolved_sampling(
             beta_schedule="lcm >> sqrt_linear",
@@ -393,8 +391,8 @@ def generate_video_from_prompt(
             optional_vae=get_value_at_index(efficient_loader_38, 4),
         )
 
-        purge_cache()
-        purge_model()
+        # purge_cache()
+        # purge_model()
 
         vhs_videocombine_111 = vhs_videocombine.combine_video(
             frame_rate=20,
@@ -409,7 +407,7 @@ def generate_video_from_prompt(
 
 
 if __name__ == "__main__":
-    batch_number = 21
+    batch_number = 19
     data_file_path = f"input/bs1000_b{batch_number}/metadata_final_b{batch_number}.txt"
     video_base_path = f"input/bs1000_b{batch_number}/videos"
     latent_base_path = f"input/bs1000_b{batch_number}/latent_images"
@@ -418,6 +416,9 @@ if __name__ == "__main__":
 
     video_prompts = read_data_file(data_file_path)
     limited_prompts = video_prompts
+
+    purge_cache()
+    purge_model()
 
     for index, (video_name, positive_prompt, human_presence) in enumerate(
         limited_prompts

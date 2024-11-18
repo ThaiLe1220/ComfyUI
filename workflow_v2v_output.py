@@ -96,17 +96,15 @@ def compare_and_update_metadata(metadata_file, videos):
             print("New metadata file not created due to mismatches.")
 
 
-# Main execution
+# STEP 1: Main execution (folder video + metadata txt file)
 directories = [
-    "/home/ubuntu/Desktop/eugene/ComfyUI/output/processed_vidoes_1911",
+    "output/processed_videos_7434",
 ]
 
-metadata_file = (
-    "/home/ubuntu/Desktop/eugene/ComfyUI/input/_temp/processed_video_1911.txt"
-)
+metadata_file = "output/processed_file_7438.txt"
 
-# videos = analyze_directories(directories)
-# compare_and_update_metadata(metadata_file, videos)
+videos = analyze_directories(directories)
+compare_and_update_metadata(metadata_file, videos)
 
 
 """reduce video size if exceeding 4mb"""
@@ -139,14 +137,14 @@ def analyze_video_files(directory):
     return len(larger_files) + smaller_count, larger_count, smaller_count
 
 
-# Step 0: Analyze video from the text file to find large video (>= 3MB)
-try:
-    total_videos, larger_count, smaller_count = analyze_video_files(directories[0])
-    print(f"Total video files: {total_videos}")
-    print(f"Files larger than 3 MB: {larger_count}")
-    print(f"Files smaller or equal to 3 MB: {smaller_count}")
-except FileNotFoundError:
-    print("Directory not found.")
+# # Step 2: Analyze video from the text file to find large video (>= 3MB)
+# try:
+#     total_videos, larger_count, smaller_count = analyze_video_files(directories[0])
+#     print(f"Total video files: {total_videos}")
+#     print(f"Files larger than 3 MB: {larger_count}")
+#     print(f"Files smaller or equal to 3 MB: {smaller_count}")
+# except FileNotFoundError:
+#     print("Directory not found.")
 
 
 # copy video appears in source text to new destination directory
@@ -168,142 +166,64 @@ def copy_files(text_file, source, destination):
             processed_files[audio_file] = {"status": "does not exist"}
 
 
-# Define the directories
-# destination_dir = "/home/ubuntu/Desktop/eugene/ComfyUI/output/large_videos"
-destination_dir = (
-    "/media/thai/7d5658ea-24a2-44d4-9cb3-f919f8c14ea6/ComfyUI/output/demo_wallpaper"
-)
-os.makedirs(destination_dir, exist_ok=True)
+# # Define the directories
+# destination_dir = "output/large_videos"
+# os.makedirs(destination_dir, exist_ok=True)
 
-# # Step 1: Copy video files from the text file
+# # Step 3: Copy video files from the text file
 # copy_status = copy_files("_larger_video_files.txt", directories[0], destination_dir)
 
-import os
-from concurrent.futures import ThreadPoolExecutor
-from moviepy.editor import VideoFileClip
-from tqdm import tqdm
+# import os
+# from concurrent.futures import ThreadPoolExecutor
+# from moviepy.editor import VideoFileClip
+# from tqdm import tqdm
 
-# Step 2: Reduce video bitrate to a baseline of 5000k for video larger than 3MB
+# # Step 4: Fix video bitrate to a baseline of 5000k for all videos
+# # Check if the directory exists
+# if os.path.exists(destination_dir):
+#     # Collect video files
+#     video_files = [
+#         file
+#         for file in os.listdir(destination_dir)
+#         if file.endswith((".mp4", ".avi", ".mov", ".mkv"))
+#     ]
 
-# Check if the directory exists
-if os.path.exists(destination_dir):
-    # Collect video files
-    video_files = [
-        file
-        for file in os.listdir(destination_dir)
-        if file.endswith((".mp4", ".avi", ".mov", ".mkv"))
-    ]
+#     # Function to process a single video file
+#     def process_video(file):
+#         video_path = os.path.join(destination_dir, file)
+#         output_path = os.path.join(destination_dir, f"reduced_{file}")
 
-    # Function to process a single video file
-    def process_video(file):
-        video_path = os.path.join(destination_dir, file)
-        output_path = os.path.join(destination_dir, f"reduced_{file}")
+#         # Load the video file
+#         with VideoFileClip(video_path) as video:
+#             # Set the target bitrate
+#             video.write_videofile(output_path, bitrate="5000k")
 
-        # Load the video file
-        with VideoFileClip(video_path) as video:
-            # Set the target bitrate
-            video.write_videofile(output_path, bitrate="8000k")
+#     # Function to replace original files with reduced bitrate versions
+#     def replace_original_files():
+#         for file in video_files:
+#             original_path = os.path.join(destination_dir, file)
+#             reduced_path = os.path.join(destination_dir, f"reduced_{file}")
 
-    # Function to replace original files with reduced bitrate versions
-    def replace_original_files():
-        for file in video_files:
-            original_path = os.path.join(destination_dir, file)
-            reduced_path = os.path.join(destination_dir, f"reduced_{file}")
+#             if os.path.exists(reduced_path):
+#                 os.remove(original_path)
+#                 os.rename(reduced_path, original_path)
+#             else:
+#                 print(f"Skipping {file}: Reduced file not found.")
 
-            if os.path.exists(reduced_path):
-                os.remove(original_path)
-                os.rename(reduced_path, original_path)
-            else:
-                print(f"Skipping {file}: Reduced file not found.")
+#     # Function to process videos concurrently
+#     def process_videos_concurrently():
+#         with ThreadPoolExecutor(max_workers=8) as executor:
+#             list(
+#                 tqdm(
+#                     executor.map(process_video, video_files),
+#                     total=len(video_files),
+#                     desc="Processing videos",
+#                     unit="file",
+#                 )
+#             )
 
-    # Function to process videos concurrently
-    def process_videos_concurrently():
-        with ThreadPoolExecutor(max_workers=8) as executor:
-            list(
-                tqdm(
-                    executor.map(process_video, video_files),
-                    total=len(video_files),
-                    desc="Processing videos",
-                    unit="file",
-                )
-            )
+#         replace_original_files()
 
-        replace_original_files()
-
-    process_videos_concurrently()
-else:
-    print("Directory does not exist.")
-
-
-"""Select 500 videos for simple demos """
-
-
-def categorize_descriptions(input_file_path, output_file_path):
-    categories = {"0-100": [], "100-200": [], "200-300": [], "others": []}
-
-    with open(input_file_path, "r") as file:
-        for line in file:
-            name, description = line.strip().split("|", 1)
-            length = len(description)
-
-            if length <= 100:
-                categories["0-100"].append(line.strip())
-            elif length <= 200:
-                categories["100-200"].append(line.strip())
-            elif length <= 300:
-                categories["200-300"].append(line.strip())
-            else:
-                categories["others"].append(line.strip())
-
-    with open(output_file_path, "w") as out_file:
-        for category, lines in categories.items():
-            out_file.write(f"Category: {category}\n")
-            out_file.write(f"Number of items: {len(lines)}\n\n")
-            for line in lines:
-                out_file.write(f"{line}\n")
-            out_file.write("\n" + "=" * 50 + "\n\n")
-
-
-def randomly_select_and_copy_videos(input_file_path, output_dir, num_videos=500):
-    try:
-        # Ensure output directory exists
-        os.makedirs(output_dir, exist_ok=True)
-
-        # Read all lines from the input file
-        with open(input_file_path, "r") as file:
-            all_lines = file.readlines()
-
-        # Randomly select 500 lines
-        selected_lines = random.sample(all_lines, min(num_videos, len(all_lines)))
-
-        # Write selected lines to a new file in the output directory
-        output_file_path = os.path.join(output_dir, "selected_metadata_500.txt")
-        with open(output_file_path, "w") as out_file:
-            out_file.writelines(selected_lines)
-
-        print(
-            f"Successfully selected {len(selected_lines)} videos and saved metadata to {output_file_path}"
-        )
-
-    except FileNotFoundError:
-        print(f"Error: The input file {input_file_path} was not found.")
-    except PermissionError:
-        print(
-            f"Error: Permission denied when trying to read {input_file_path} or write to {output_dir}."
-        )
-    except Exception as e:
-        print(f"An unexpected error occurred: {str(e)}")
-
-
-# Example usage
-input_file_path = (
-    "/home/ubuntu/Desktop/eugene/ComfyUI/input/_complete/data_complete_videos_16730.txt"
-)
-output_file_path = "/home/ubuntu/Desktop/eugene/ComfyUI/input/_complete/data_complete_videos_16730_categorized.txt"
-
-output_dir = "/home/ubuntu/Desktop/eugene/ComfyUI/input/_complete/"
-
-# categorize_descriptions(input_file_path, output_file_path)
-# randomly_select_and_copy_videos(input_file_path, output_dir)
-
-# print(f"Categorized metadata has been written to {output_file_path}")
+#     process_videos_concurrently()
+# else:
+#     print("Directory does not exist.")
