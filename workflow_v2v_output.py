@@ -96,7 +96,7 @@ def compare_and_update_metadata(metadata_file, videos):
             print("New metadata file not created due to mismatches.")
 
 
-# Main execution
+# STEP 1: Main execution (folder video + metadata txt file)
 directories = [
     "output/processed_videos_7434",
 ]
@@ -137,7 +137,7 @@ def analyze_video_files(directory):
     return len(larger_files) + smaller_count, larger_count, smaller_count
 
 
-# # Step 0: Analyze video from the text file to find large video (>= 3MB)
+# # Step 2: Analyze video from the text file to find large video (>= 3MB)
 # try:
 #     total_videos, larger_count, smaller_count = analyze_video_files(directories[0])
 #     print(f"Total video files: {total_videos}")
@@ -170,7 +170,7 @@ def copy_files(text_file, source, destination):
 # destination_dir = "output/large_videos"
 # os.makedirs(destination_dir, exist_ok=True)
 
-# # Step 1: Copy video files from the text file
+# # Step 3: Copy video files from the text file
 # copy_status = copy_files("_larger_video_files.txt", directories[0], destination_dir)
 
 # import os
@@ -178,7 +178,7 @@ def copy_files(text_file, source, destination):
 # from moviepy.editor import VideoFileClip
 # from tqdm import tqdm
 
-# # Step 2: Fix video bitrate to a baseline of 8000k for all videos
+# # Step 4: Fix video bitrate to a baseline of 5000k for all videos
 # # Check if the directory exists
 # if os.path.exists(destination_dir):
 #     # Collect video files
