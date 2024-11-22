@@ -287,21 +287,30 @@ class VAEDecode:
     DESCRIPTION = "Decodes latent images back into pixel space images."
 
     def decode(self, vae, samples):
-        return (vae.decode(samples["samples"]), )
+        images = vae.decode(samples["samples"])
+        if len(images.shape) == 5: #Combine batches
+            images = images.reshape(-1, images.shape[-3], images.shape[-2], images.shape[-1])
+        return (images, )
 
 class VAEDecodeTiled:
     @classmethod
     def INPUT_TYPES(s):
         return {"required": {"samples": ("LATENT", ), "vae": ("VAE", ),
-                             "tile_size": ("INT", {"default": 512, "min": 320, "max": 4096, "step": 64})
+                             "tile_size": ("INT", {"default": 512, "min": 128, "max": 4096, "step": 32}),
+                             "overlap": ("INT", {"default": 64, "min": 0, "max": 4096, "step": 32}),
                             }}
     RETURN_TYPES = ("IMAGE",)
     FUNCTION = "decode"
 
     CATEGORY = "_for_testing"
 
-    def decode(self, vae, samples, tile_size):
-        return (vae.decode_tiled(samples["samples"], tile_x=tile_size // 8, tile_y=tile_size // 8, ), )
+    def decode(self, vae, samples, tile_size, overlap=64):
+        if tile_size < overlap * 4:
+            overlap = tile_size // 4
+        images = vae.decode_tiled(samples["samples"], tile_x=tile_size // 8, tile_y=tile_size // 8, overlap=overlap // 8)
+        if len(images.shape) == 5: #Combine batches
+            images = images.reshape(-1, images.shape[-3], images.shape[-2], images.shape[-1])
+        return (images, )
 
 class VAEEncode:
     @classmethod
@@ -409,6 +418,7 @@ class InpaintModelConditioning:
                              "vae": ("VAE", ),
                              "pixels": ("IMAGE", ),
                              "mask": ("MASK", ),
+                             "noise_mask": ("BOOLEAN", {"default": True, "tooltip": "Add a noise mask to the latent so sampling will only happen within the mask. Might improve results or completely break things depending on the model."}),
                              }}
 
     RETURN_TYPES = ("CONDITIONING","CONDITIONING","LATENT")
@@ -417,7 +427,7 @@ class InpaintModelConditioning:
 
     CATEGORY = "conditioning/inpaint"
 
-    def encode(self, positive, negative, pixels, vae, mask):
+    def encode(self, positive, negative, pixels, vae, mask, noise_mask):
         x = (pixels.shape[1] // 8) * 8
         y = (pixels.shape[2] // 8) * 8
         mask = torch.nn.functional.interpolate(mask.reshape((-1, 1, mask.shape[-2], mask.shape[-1])), size=(pixels.shape[1], pixels.shape[2]), mode="bilinear")
@@ -441,7 +451,8 @@ class InpaintModelConditioning:
         out_latent = {}
 
         out_latent["samples"] = orig_latent
-        out_latent["noise_mask"] = mask
+        if noise_mask:
+            out_latent["noise_mask"] = mask
 
         out = []
         for conditioning in [positive, negative]:
@@ -551,7 +562,7 @@ class CheckpointLoader:
 
     def load_checkpoint(self, config_name, ckpt_name):
         config_path = folder_paths.get_full_path("configs", config_name)
-        ckpt_path = folder_paths.get_full_path("checkpoints", ckpt_name)
+        ckpt_path = folder_paths.get_full_path_or_raise("checkpoints", ckpt_name)
         return comfy.sd.load_checkpoint(config_path, ckpt_path, output_vae=True, output_clip=True, embedding_directory=folder_paths.get_folder_paths("embeddings"))
 
 class CheckpointLoaderSimple:
@@ -572,7 +583,7 @@ class CheckpointLoaderSimple:
     DESCRIPTION = "Loads a diffusion model checkpoint, diffusion models are used to denoise latents."
 
     def load_checkpoint(self, ckpt_name):
-        ckpt_path = folder_paths.get_full_path("checkpoints", ckpt_name)
+        ckpt_path = folder_paths.get_full_path_or_raise("checkpoints", ckpt_name)
         out = comfy.sd.load_checkpoint_guess_config(ckpt_path, output_vae=True, output_clip=True, embedding_directory=folder_paths.get_folder_paths("embeddings"))
         return out[:3]
 
@@ -614,7 +625,7 @@ class unCLIPCheckpointLoader:
     CATEGORY = "loaders"
 
     def load_checkpoint(self, ckpt_name, output_vae=True, output_clip=True):
-        ckpt_path = folder_paths.get_full_path("checkpoints", ckpt_name)
+        ckpt_path = folder_paths.get_full_path_or_raise("checkpoints", ckpt_name)
         out = comfy.sd.load_checkpoint_guess_config(ckpt_path, output_vae=True, output_clip=True, output_clipvision=True, embedding_directory=folder_paths.get_folder_paths("embeddings"))
         return out
 
@@ -661,7 +672,7 @@ class LoraLoader:
         if strength_model == 0 and strength_clip == 0:
             return (model, clip)
 
-        lora_path = folder_paths.get_full_path("loras", lora_name)
+        lora_path = folder_paths.get_full_path_or_raise("loras", lora_name)
         lora = None
         if self.loaded_lora is not None:
             if self.loaded_lora[0] == lora_path:
@@ -740,11 +751,11 @@ class VAELoader:
         encoder = next(filter(lambda a: a.startswith("{}_encoder.".format(name)), approx_vaes))
         decoder = next(filter(lambda a: a.startswith("{}_decoder.".format(name)), approx_vaes))
 
-        enc = comfy.utils.load_torch_file(folder_paths.get_full_path("vae_approx", encoder))
+        enc = comfy.utils.load_torch_file(folder_paths.get_full_path_or_raise("vae_approx", encoder))
         for k in enc:
             sd["taesd_encoder.{}".format(k)] = enc[k]
 
-        dec = comfy.utils.load_torch_file(folder_paths.get_full_path("vae_approx", decoder))
+        dec = comfy.utils.load_torch_file(folder_paths.get_full_path_or_raise("vae_approx", decoder))
         for k in dec:
             sd["taesd_decoder.{}".format(k)] = dec[k]
 
@@ -775,7 +786,7 @@ class VAELoader:
         if vae_name in ["taesd", "taesdxl", "taesd3", "taef1"]:
             sd = self.load_taesd(vae_name)
         else:
-            vae_path = folder_paths.get_full_path("vae", vae_name)
+            vae_path = folder_paths.get_full_path_or_raise("vae", vae_name)
             sd = comfy.utils.load_torch_file(vae_path)
         vae = comfy.sd.VAE(sd=sd)
         return (vae,)
@@ -791,7 +802,7 @@ class ControlNetLoader:
     CATEGORY = "loaders"
 
     def load_controlnet(self, control_net_name):
-        controlnet_path = folder_paths.get_full_path("controlnet", control_net_name)
+        controlnet_path = folder_paths.get_full_path_or_raise("controlnet", control_net_name)
         controlnet = comfy.controlnet.load_controlnet(controlnet_path)
         return (controlnet,)
 
@@ -807,7 +818,7 @@ class DiffControlNetLoader:
     CATEGORY = "loaders"
 
     def load_controlnet(self, model, control_net_name):
-        controlnet_path = folder_paths.get_full_path("controlnet", control_net_name)
+        controlnet_path = folder_paths.get_full_path_or_raise("controlnet", control_net_name)
         controlnet = comfy.controlnet.load_controlnet(controlnet_path, model)
         return (controlnet,)
 
@@ -823,6 +834,7 @@ class ControlNetApply:
     RETURN_TYPES = ("CONDITIONING",)
     FUNCTION = "apply_controlnet"
 
+    DEPRECATED = True
     CATEGORY = "conditioning/controlnet"
 
     def apply_controlnet(self, conditioning, control_net, image, strength):
@@ -852,7 +864,10 @@ class ControlNetApplyAdvanced:
                              "strength": ("FLOAT", {"default": 1.0, "min": 0.0, "max": 10.0, "step": 0.01}),
                              "start_percent": ("FLOAT", {"default": 0.0, "min": 0.0, "max": 1.0, "step": 0.001}),
                              "end_percent": ("FLOAT", {"default": 1.0, "min": 0.0, "max": 1.0, "step": 0.001})
-                             }}
+                             },
+                "optional": {"vae": ("VAE", ),
+                             }
+    }
 
     RETURN_TYPES = ("CONDITIONING","CONDITIONING")
     RETURN_NAMES = ("positive", "negative")
@@ -893,7 +908,7 @@ class UNETLoader:
     @classmethod
     def INPUT_TYPES(s):
         return {"required": { "unet_name": (folder_paths.get_filename_list("diffusion_models"), ),
-                              "weight_dtype": (["default", "fp8_e4m3fn", "fp8_e5m2"],)
+                              "weight_dtype": (["default", "fp8_e4m3fn", "fp8_e4m3fn_fast", "fp8_e5m2"],)
                              }}
     RETURN_TYPES = ("MODEL",)
     FUNCTION = "load_unet"
@@ -904,23 +919,28 @@ class UNETLoader:
         model_options = {}
         if weight_dtype == "fp8_e4m3fn":
             model_options["dtype"] = torch.float8_e4m3fn
+        elif weight_dtype == "fp8_e4m3fn_fast":
+            model_options["dtype"] = torch.float8_e4m3fn
+            model_options["fp8_optimizations"] = True
         elif weight_dtype == "fp8_e5m2":
             model_options["dtype"] = torch.float8_e5m2
 
-        unet_path = folder_paths.get_full_path("diffusion_models", unet_name)
+        unet_path = folder_paths.get_full_path_or_raise("diffusion_models", unet_name)
         model = comfy.sd.load_diffusion_model(unet_path, model_options=model_options)
         return (model,)
 
 class CLIPLoader:
     @classmethod
     def INPUT_TYPES(s):
-        return {"required": { "clip_name": (folder_paths.get_filename_list("clip"), ),
-                              "type": (["stable_diffusion", "stable_cascade", "sd3", "stable_audio"], ),
+        return {"required": { "clip_name": (folder_paths.get_filename_list("text_encoders"), ),
+                              "type": (["stable_diffusion", "stable_cascade", "sd3", "stable_audio", "mochi"], ),
                              }}
     RETURN_TYPES = ("CLIP",)
     FUNCTION = "load_clip"
 
     CATEGORY = "advanced/loaders"
+
+    DESCRIPTION = "[Recipes]\n\nstable_diffusion: clip-l\nstable_cascade: clip-g\nsd3: t5 / clip-g / clip-l\nstable_audio: t5\nmochi: t5"
 
     def load_clip(self, clip_name, type="stable_diffusion"):
         if type == "stable_cascade":
@@ -929,18 +949,20 @@ class CLIPLoader:
             clip_type = comfy.sd.CLIPType.SD3
         elif type == "stable_audio":
             clip_type = comfy.sd.CLIPType.STABLE_AUDIO
+        elif type == "mochi":
+            clip_type = comfy.sd.CLIPType.MOCHI
         else:
             clip_type = comfy.sd.CLIPType.STABLE_DIFFUSION
 
-        clip_path = folder_paths.get_full_path("clip", clip_name)
+        clip_path = folder_paths.get_full_path_or_raise("text_encoders", clip_name)
         clip = comfy.sd.load_clip(ckpt_paths=[clip_path], embedding_directory=folder_paths.get_folder_paths("embeddings"), clip_type=clip_type)
         return (clip,)
 
 class DualCLIPLoader:
     @classmethod
     def INPUT_TYPES(s):
-        return {"required": { "clip_name1": (folder_paths.get_filename_list("clip"), ),
-                              "clip_name2": (folder_paths.get_filename_list("clip"), ),
+        return {"required": { "clip_name1": (folder_paths.get_filename_list("text_encoders"), ),
+                              "clip_name2": (folder_paths.get_filename_list("text_encoders"), ),
                               "type": (["sdxl", "sd3", "flux"], ),
                              }}
     RETURN_TYPES = ("CLIP",)
@@ -948,9 +970,11 @@ class DualCLIPLoader:
 
     CATEGORY = "advanced/loaders"
 
+    DESCRIPTION = "[Recipes]\n\nsdxl: clip-l, clip-g\nsd3: clip-l, clip-g / clip-l, t5 / clip-g, t5\nflux: clip-l, t5"
+
     def load_clip(self, clip_name1, clip_name2, type):
-        clip_path1 = folder_paths.get_full_path("clip", clip_name1)
-        clip_path2 = folder_paths.get_full_path("clip", clip_name2)
+        clip_path1 = folder_paths.get_full_path_or_raise("text_encoders", clip_name1)
+        clip_path2 = folder_paths.get_full_path_or_raise("text_encoders", clip_name2)
         if type == "sdxl":
             clip_type = comfy.sd.CLIPType.STABLE_DIFFUSION
         elif type == "sd3":
@@ -972,7 +996,7 @@ class CLIPVisionLoader:
     CATEGORY = "loaders"
 
     def load_clip(self, clip_name):
-        clip_path = folder_paths.get_full_path("clip_vision", clip_name)
+        clip_path = folder_paths.get_full_path_or_raise("clip_vision", clip_name)
         clip_vision = comfy.clip_vision.load(clip_path)
         return (clip_vision,)
 
@@ -1002,7 +1026,7 @@ class StyleModelLoader:
     CATEGORY = "loaders"
 
     def load_style_model(self, style_model_name):
-        style_model_path = folder_paths.get_full_path("style_models", style_model_name)
+        style_model_path = folder_paths.get_full_path_or_raise("style_models", style_model_name)
         style_model = comfy.sd.load_style_model(style_model_path)
         return (style_model,)
 
@@ -1067,7 +1091,7 @@ class GLIGENLoader:
     CATEGORY = "loaders"
 
     def load_gligen(self, gligen_name):
-        gligen_path = folder_paths.get_full_path("gligen", gligen_name)
+        gligen_path = folder_paths.get_full_path_or_raise("gligen", gligen_name)
         gligen = comfy.sd.load_gligen(gligen_path)
         return (gligen,)
 
@@ -1208,10 +1232,10 @@ class LatentUpscale:
 
             if width == 0:
                 height = max(64, height)
-                width = max(64, round(samples["samples"].shape[3] * height / samples["samples"].shape[2]))
+                width = max(64, round(samples["samples"].shape[-1] * height / samples["samples"].shape[-2]))
             elif height == 0:
                 width = max(64, width)
-                height = max(64, round(samples["samples"].shape[2] * width / samples["samples"].shape[3]))
+                height = max(64, round(samples["samples"].shape[-2] * width / samples["samples"].shape[-1]))
             else:
                 width = max(64, width)
                 height = max(64, height)
@@ -1233,8 +1257,8 @@ class LatentUpscaleBy:
 
     def upscale(self, samples, upscale_method, scale_by):
         s = samples.copy()
-        width = round(samples["samples"].shape[3] * scale_by)
-        height = round(samples["samples"].shape[2] * scale_by)
+        width = round(samples["samples"].shape[-1] * scale_by)
+        height = round(samples["samples"].shape[-2] * scale_by)
         s["samples"] = comfy.utils.common_upscale(samples["samples"], width, height, upscale_method, "disabled")
         return (s,)
 
@@ -2020,8 +2044,8 @@ NODE_DISPLAY_NAME_MAPPINGS = {
     "ConditioningSetArea": "Conditioning (Set Area)",
     "ConditioningSetAreaPercentage": "Conditioning (Set Area with Percentage)",
     "ConditioningSetMask": "Conditioning (Set Mask)",
-    "ControlNetApply": "Apply ControlNet",
-    "ControlNetApplyAdvanced": "Apply ControlNet (Advanced)",
+    "ControlNetApply": "Apply ControlNet (OLD)",
+    "ControlNetApplyAdvanced": "Apply ControlNet",
     # Latent
     "VAEEncodeForInpaint": "VAE Encode (for Inpainting)",
     "SetLatentNoiseMask": "Set Latent Noise Mask",
@@ -2048,6 +2072,12 @@ NODE_DISPLAY_NAME_MAPPINGS = {
     "ImageInvert": "Invert Image",
     "ImagePadForOutpaint": "Pad Image for Outpainting",
     "ImageBatch": "Batch Images",
+    "ImageCrop": "Image Crop",
+    "ImageBlend": "Image Blend",
+    "ImageBlur": "Image Blur",
+    "ImageQuantize": "Image Quantize",
+    "ImageSharpen": "Image Sharpen",
+    "ImageScaleToTotalPixels": "Scale Image to Total Pixels",
     # _for_testing
     "VAEDecodeTiled": "VAE Decode (Tiled)",
     "VAEEncodeTiled": "VAE Encode (Tiled)",
@@ -2207,6 +2237,8 @@ def init_builtin_extra_nodes():
         "nodes_flux.py",
         "nodes_lora_extract.py",
         "nodes_torch_compile.py",
+        "nodes_mochi.py",
+        "nodes_slg.py",
     ]
 
     import_failed = []

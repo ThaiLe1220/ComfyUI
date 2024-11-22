@@ -28,7 +28,7 @@
 [github-downloads-latest-shield]: https://img.shields.io/github/downloads/comfyanonymous/ComfyUI/latest/total?style=flat&label=downloads%40latest
 [github-downloads-link]: https://github.com/comfyanonymous/ComfyUI/releases
 
-![ComfyUI Screenshot](comfyui_screenshot.png)
+![ComfyUI Screenshot](https://github.com/user-attachments/assets/7ccaf2c1-9b72-41ae-9a89-5688c94b7abe)
 </div>
 
 This ui will let you design and execute advanced stable diffusion pipelines using a graph/nodes/flowchart based interface. For some workflow examples and see what ComfyUI can do you can check out:
@@ -40,6 +40,7 @@ This ui will let you design and execute advanced stable diffusion pipelines usin
 - Nodes/graph/flowchart interface to experiment and create complex Stable Diffusion workflows without needing to code anything.
 - Fully supports SD1.x, SD2.x, [SDXL](https://comfyanonymous.github.io/ComfyUI_examples/sdxl/), [Stable Video Diffusion](https://comfyanonymous.github.io/ComfyUI_examples/video/), [Stable Cascade](https://comfyanonymous.github.io/ComfyUI_examples/stable_cascade/), [SD3](https://comfyanonymous.github.io/ComfyUI_examples/sd3/) and [Stable Audio](https://comfyanonymous.github.io/ComfyUI_examples/audio/)
 - [Flux](https://comfyanonymous.github.io/ComfyUI_examples/flux/)
+- [Mochi](https://comfyanonymous.github.io/ComfyUI_examples/mochi/)
 - Asynchronous Queue system
 - Many optimizations: Only re-executes the parts of the workflow that changes between executions.
 - Smart memory management: can automatically run models on GPUs with as low as 1GB vram.
@@ -127,6 +128,8 @@ To run it on services like paperspace, kaggle or colab you can use my [Jupyter N
 
 ## Manual Install (Windows, Linux)
 
+Note that some dependencies do not yet support python 3.13 so using 3.12 is recommended.
+
 Git clone this repo.
 
 Put your SD checkpoints (the huge ckpt/safetensors files) in: models/checkpoints
@@ -137,7 +140,7 @@ Put your VAE in: models/vae
 ### AMD GPUs (Linux only)
 AMD users can install rocm and pytorch with pip if you don't have it already installed, this is the command to install the stable version:
 
-```pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/rocm6.1```
+```pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/rocm6.2```
 
 This is the command to install the nightly with ROCm 6.2 which might have some performance improvements:
 
