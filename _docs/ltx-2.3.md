@@ -54,7 +54,7 @@ Key differences from official examples:
 | `gemma-3-12b-it-abliterated_lora_rank64_bf16.safetensors` | 628 MB | `models/loras/` |
 | `ltx-2.3-spatial-upscaler-x2-1.1.safetensors` | 996 MB | `models/latent_upscale_models/` |
 
-No custom nodes needed for basic workflow. May OOM on longer videos.
+No custom nodes needed. Uses `CheckpointLoaderSimple` (standard ComfyUI path). Launch with `comfyui` — same as Path A.
 
 ## Generation Constraints
 
