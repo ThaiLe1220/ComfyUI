@@ -63,6 +63,28 @@ No custom nodes needed. Uses `CheckpointLoaderSimple` (standard ComfyUI path). L
 - **Prompts:** use long, descriptive prompts for best results
 - **Camera controls:** dolly_in, dolly_out, dolly_left, dolly_right, jib_up, jib_down, static, focus_shift
 
+## Two-Stage Pipeline (recommended)
+
+**Workflow:** `workflows/eugene_ltx23_two_stage_t2v.json`
+
+Generates at half resolution, then upscales in latent space for detail. Better temporal consistency than single-stage, especially for 5s+ clips.
+
+**Stage 1** — motion planning at half res:
+- `EmptyLTXVLatentVideo` at `width/2, height/2`
+- 8 steps, `euler_ancestral_cfg_pp`, LoRA strength 0.5
+- For i2v: add `LoadImage → LTXVPreprocess(compression=38) → ImageScale → LTXVImgToVideoInplace(strength=0.5-0.7)` before the sampler
+
+**Stage 2** — detail refinement at full res:
+- `LTXVLatentUpsampler` (2x, uses `ltx-2.3-spatial-upscaler-x2-1.1.safetensors`)
+- 4 steps, `euler_cfg_pp`, LoRA strength 0.2
+- Sigmas: `0.85, 0.725, 0.4219, 0.0`
+
+**I2V tips:**
+- Use `LTXVImgToVideoInplace` (not `LTXVImgToVideoConditionOnly`)
+- `img_compression`: 35-42 (model needs compression artifacts to drive motion)
+- Strength 0.5-0.6 for 5s+ clips, 0.7 for short clips
+- Prompt for **motion**, not appearance
+
 ## Custom Nodes Required
 
 | Node | Purpose |
