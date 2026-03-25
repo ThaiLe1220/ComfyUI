@@ -65,7 +65,9 @@ No custom nodes needed. Uses `CheckpointLoaderSimple` (standard ComfyUI path). L
 
 ## Two-Stage Pipeline (recommended)
 
-**Workflow:** `workflows/eugene_ltx23_two_stage_t2v.json`
+**Workflows:**
+- GGUF: `workflows/eugene_ltx23_two_stage_t2v.json`
+- FP8: `workflows/eugene_ltx23_fp8_two_stage_t2v.json`
 
 Generates at half resolution, then upscales in latent space for detail. Better temporal consistency than single-stage, especially for 5s+ clips.
 
