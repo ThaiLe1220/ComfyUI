@@ -1,0 +1,69 @@
+{
+  "1": {
+    "class_type": "CheckpointLoaderSimple",
+    "inputs": {
+      "ckpt_name": "flux1-schnell-fp8.safetensors"
+    },
+    "_note": "All-in-one FP8 checkpoint bundles model + CLIP-L + T5-XXL + VAE"
+  },
+  "2": {
+    "class_type": "CLIPTextEncode",
+    "inputs": {
+      "text": "A golden retriever puppy plays in a sunlit garden, chasing butterflies between colorful flower beds. Warm afternoon light creates soft shadows on the green grass.",
+      "clip": ["1", 1]
+    },
+    "_note": "Positive prompt"
+  },
+  "3": {
+    "class_type": "CLIPTextEncode",
+    "inputs": {
+      "text": "",
+      "clip": ["1", 1]
+    }
+  },
+  "4": {
+    "class_type": "ConditioningZeroOut",
+    "inputs": {
+      "conditioning": ["3", 0]
+    },
+    "_note": "Schnell ignores negative (CFG=1.0), but KSampler requires it"
+  },
+  "5": {
+    "class_type": "EmptyLatentImage",
+    "inputs": {
+      "width": 1024,
+      "height": 1024,
+      "batch_size": 1
+    }
+  },
+  "6": {
+    "class_type": "KSampler",
+    "inputs": {
+      "seed": 42,
+      "steps": 4,
+      "cfg": 1.0,
+      "sampler_name": "euler",
+      "scheduler": "simple",
+      "denoise": 1.0,
+      "model": ["1", 0],
+      "positive": ["2", 0],
+      "negative": ["4", 0],
+      "latent_image": ["5", 0]
+    },
+    "_note": "4 steps, CFG 1.0 — Schnell is distilled for fast generation"
+  },
+  "7": {
+    "class_type": "VAEDecode",
+    "inputs": {
+      "samples": ["6", 0],
+      "vae": ["1", 2]
+    }
+  },
+  "8": {
+    "class_type": "SaveImage",
+    "inputs": {
+      "images": ["7", 0],
+      "filename_prefix": "flux1_schnell_fp8"
+    }
+  }
+}

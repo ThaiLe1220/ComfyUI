@@ -29,8 +29,48 @@ Check before downloading. Run `du -sh models/*/` to see current sizes.
 
 Note: FP8 checkpoint bundles its own VAE and connectors — no separate files needed.
 
+---
+
+## Text-to-Image Models
+
+See `_docs/t2i-models.md` for full details, node chains, and architecture differences.
+
+### Shared (T2I)
+
+| Model | Size | Path | Used By |
+|-------|------|------|---------|
+| `qwen_3_4b.safetensors` | 7.5 GB | `text_encoders/` | Klein 4B, Z-Image Turbo (type=flux2 / lumina2) |
+| `flux2-vae.safetensors` | 321 MB | `vae/` | Klein 4B, Klein 9B |
+| `ae.safetensors` | 320 MB | `vae/` | Z-Image Turbo FP8 |
+
+### FLUX.1 Schnell
+
+| Model | Size | Path | Workflows |
+|-------|------|------|-----------|
+| `flux1-schnell-fp8.safetensors` | 17 GB | `checkpoints/` | `eugene_flux1_schnell_fp8_t2i.json` |
+
+### FLUX.2 Klein 4B
+
+| Model | Size | Path | Workflows |
+|-------|------|------|-----------|
+| `flux-2-klein-4b.safetensors` | 7.2 GB | `diffusion_models/` | `eugene_flux2_klein4b_bf16_t2i.json` |
+
+### FLUX.2 Klein 9B
+
+| Model | Size | Path | Workflows |
+|-------|------|------|-----------|
+| `flux-2-klein-9b-fp8.safetensors` | 8.8 GB | `diffusion_models/` | `eugene_flux2_klein9b_fp8_t2i.json` |
+| `qwen_3_8b_fp8mixed.safetensors` | 8.1 GB | `text_encoders/` | Same (9B needs Qwen3-8B, not 4B) |
+
+### Z-Image Turbo
+
+| Model | Size | Path | Workflows |
+|-------|------|------|-----------|
+| `z-image-turbo_fp8_scaled_e4m3fn_KJ.safetensors` | 5.7 GB | `diffusion_models/` | `eugene_zimage_turbo_fp8_t2i.json` |
+
 ## Storage
 
-- **Current usage:** ~63 GB
+- **Current usage:** ~107 GB
 - **Limit:** 300 GB
-- Added by: eugene, 2026-03-24
+- Video models added by: eugene, 2026-03-24
+- T2I models added by: eugene, 2026-03-25
